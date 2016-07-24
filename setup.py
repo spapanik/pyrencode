@@ -7,7 +7,7 @@ def file_to_list(filename):
 setup(
     name='pyrencode',
     packages=['pyrencode'],
-    version='0.0.1',
+    version='0.0.2',
     description='A pure python rencoder',
     license='MIT',
     long_description=open('README.txt',).read(),
