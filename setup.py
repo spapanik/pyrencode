@@ -10,7 +10,7 @@ setup(
     version='0.0.1',
     description='A pure python rencoder',
     license='MIT',
-    long_description=open('README.md',).read(),
+    long_description=open('README.txt',).read(),
     author='Stephanos Papanikolopoulos',
     author_email='spapanik21@gmail.com',
     url='https://github.com/spapanik/pyrencode',

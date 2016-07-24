@@ -1,4 +1,4 @@
 include CLASSIFIERS.txt
 include KEYWORDS.txt
-include LICENSE.md
-include README.md
+include LICENSE.txt
+include README.txt
