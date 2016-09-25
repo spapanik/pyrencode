@@ -13,14 +13,14 @@ def contents(filename):
 setup(
     name='pyrencode',
     packages=['pyrencode', 'pyrencode.settings'],
-    version='0.0.2',
+    version='0.0.3',
     description='A pure python rencoder',
     license='MIT',
     long_description=contents('README.txt'),
     author='Stephanos Papanikolopoulos',
     author_email='spapanik21@gmail.com',
     url='https://github.com/spapanik/pyrencode',
-    download_url='https://github.com/spapanik/pyrencode/tarball/0.0.1',
+    download_url='https://github.com/spapanik/pyrencode/tarball/0.0.3',
     keywords=listify('KEYWORDS.txt'),
     classifiers=listify('CLASSIFIERS.txt'),
 )
