@@ -1,20 +1,26 @@
 from distutils.core import setup
 
 
-def file_to_list(filename):
-    return [line.strip() for line in open(filename).readlines()]
+def listify(filename):
+    with open(filename) as f:
+        return [line.strip() for line in f.readlines()]
+
+
+def contents(filename):
+    with open(filename) as f:
+        return f.read()
 
 setup(
     name='pyrencode',
-    packages=['pyrencode'],
+    packages=['pyrencode', 'pyrencode.settings'],
     version='0.0.2',
     description='A pure python rencoder',
     license='MIT',
-    long_description=open('README.txt',).read(),
+    long_description=contents('README.txt'),
     author='Stephanos Papanikolopoulos',
     author_email='spapanik21@gmail.com',
     url='https://github.com/spapanik/pyrencode',
     download_url='https://github.com/spapanik/pyrencode/tarball/0.0.1',
-    keywords=file_to_list('KEYWORDS.txt'),
-    classifiers=file_to_list('CLASSIFIERS.txt'),
+    keywords=listify('KEYWORDS.txt'),
+    classifiers=listify('CLASSIFIERS.txt'),
 )
