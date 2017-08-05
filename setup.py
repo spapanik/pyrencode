@@ -1,7 +1,7 @@
 from setuptools import setup
 
 PKG_NAME = 'pyrencode'
-__version__ = '0.0.4'
+__version__ = '0.0.5'
 
 
 def listify(filename):
@@ -27,6 +27,7 @@ setup(
         pkg_name=PKG_NAME,
         ver=__version__,
     ),
+    tests_require=listify('requirements_test.txt'),
     keywords=listify('KEYWORDS.txt'),
     classifiers=listify('CLASSIFIERS.txt'),
 )
