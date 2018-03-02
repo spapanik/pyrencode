@@ -1,19 +1,12 @@
-# editors
-.*.swp
-*~
-\#*\#
-.idea
-
-# python
+# python bytecode
 __pycache__/
-*.py[cod]
-*$py.class
-*.egg-info/
 
-# dist outpout
-MANIFEST
+
+# distribution/packaging
+pyrencode.egg-info/
+build/
 dist/
 
 
-# tests
-.cache/
+# unit-testing
+.pytest_cache/
