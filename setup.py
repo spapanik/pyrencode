@@ -13,6 +13,7 @@ def contents(filename):
     with open(filename) as f:
         return f.read()
 
+
 setup(
     name=PKG_NAME,
     packages=[PKG_NAME, 'pyrencode.settings'],
