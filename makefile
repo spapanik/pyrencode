@@ -11,7 +11,7 @@ venv:
 	virtualenv ${VENV_NAME}
 
 dist:
-	{PYTHON} setup.py sdist bdist_wheel
+	${PYTHON} setup.py sdist bdist_wheel
 
 install:
-	{PIP} install -e .
+	${PIP} install -e .
