@@ -4,11 +4,6 @@ PKG_NAME = "pyrencode"
 __version__ = "0.1.0"
 
 
-def listify(filename):
-    with open(filename) as f:
-        return [line.strip() for line in f.readlines()]
-
-
 def contents(filename):
     with open(filename) as f:
         return f.read()
@@ -27,7 +22,11 @@ setup(
     download_url="https://github.com/spapanik/{pkg_name}/tarball/{ver}".format(
         pkg_name=PKG_NAME, ver=__version__
     ),
-    tests_require=listify("requirements_test.txt"),
-    keywords=listify("KEYWORDS.txt"),
-    classifiers=listify("CLASSIFIERS.txt"),
+    tests_require=["pytest>=3.0.0,<4.0.0"],
+    keywords=["deluge", "rencode", "encode", "decode"],
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3 :: Only",
+    ],
 )
