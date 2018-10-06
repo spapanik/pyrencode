@@ -1,0 +1,17 @@
+[tool.black]
+line-length = 79
+py36 = true
+
+[tool.poetry]
+name = "pyrencode"
+version = "0.1.0"
+description = "A pure python rencoder"
+authors = ["Steph Papanik <spapanik21@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.6"
+
+[tool.poetry.dev-dependencies]
+black = "^18.0"
+pytest = "^3.0"
