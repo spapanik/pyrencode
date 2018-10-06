@@ -1,7 +1,11 @@
-from setuptools import setup
+from setuptools import find_packages, setup
+
+__author__ = "spapanik"
+__version__ = "0.1.0"
+__license__ = "MIT"
 
 PKG_NAME = "pyrencode"
-__version__ = "0.1.0"
+PKG_URL = f"https://github.com/{__author__}/{PKG_NAME}"
 
 
 def contents(filename):
@@ -11,17 +15,17 @@ def contents(filename):
 
 setup(
     name=PKG_NAME,
-    packages=[PKG_NAME, "pyrencode.settings"],
+    packages=find_packages("src"),
+    package_dir={"": "src"},
     version=__version__,
-    description="A pure python rencoder",
-    license="MIT",
-    long_description=contents("readme.md"),
-    author="Stephanos Papanikolopoulos",
+    author=__author__,
     author_email="spapanik21@gmail.com",
-    url="https://github.com/spapanik/{pkg_name}".format(pkg_name=PKG_NAME),
-    download_url="https://github.com/spapanik/{pkg_name}/tarball/{ver}".format(
-        pkg_name=PKG_NAME, ver=__version__
-    ),
+    license=__license__,
+    description="A pure python rencoder",
+    long_description=contents("readme.md"),
+    url=PKG_URL,
+    download_url=f"{PKG_URL}/tarball/{__version__}",
+    python_requires=">=3.6",
     tests_require=["pytest>=3.0.0,<4.0.0"],
     keywords=["deluge", "rencode", "encode", "decode"],
     classifiers=[
