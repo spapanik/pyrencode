@@ -10,27 +10,27 @@ def encode_int(obj, data_list):
     elif -INT_NEG_FIXED_COUNT <= obj < 0:
         data_list.append(int2byte(INT_NEG_FIXED_START - 1 - obj))
     elif -INT1_SIZE <= obj < INT1_SIZE:
-        data_list.extend((CHR_INT1, struct.pack('!b', obj)))
+        data_list.extend((CHR_INT1, struct.pack("!b", obj)))
     elif -INT2_SIZE <= obj < INT2_SIZE:
-        data_list.extend((CHR_INT2, struct.pack('!h', obj)))
+        data_list.extend((CHR_INT2, struct.pack("!h", obj)))
     elif -INT4_SIZE <= obj < INT4_SIZE:
-        data_list.extend((CHR_INT4, struct.pack('!l', obj)))
+        data_list.extend((CHR_INT4, struct.pack("!l", obj)))
     elif -INT8_SIZE <= obj < INT8_SIZE:
-        data_list.extend((CHR_INT8, struct.pack('!q', obj)))
+        data_list.extend((CHR_INT8, struct.pack("!q", obj)))
     else:
-        s = bytes(str(obj), 'ascii')
+        s = bytes(str(obj), "ascii")
         if len(s) >= MAX_INT_LENGTH:
-            raise OverflowError('Integer is too long to be rencoded.')
+            raise OverflowError("Integer is too long to be rencoded.")
 
         data_list.extend((CHR_INT, s, CHR_TERM))
 
 
 def encode_float32(obj, data_list):
-    data_list.extend((CHR_FLOAT32, struct.pack('!f', obj)))
+    data_list.extend((CHR_FLOAT32, struct.pack("!f", obj)))
 
 
 def encode_float64(obj, data_list):
-    data_list.extend((CHR_FLOAT64, struct.pack('!d', obj)))
+    data_list.extend((CHR_FLOAT64, struct.pack("!d", obj)))
 
 
 def encode_bool(obj, data_list):
@@ -49,7 +49,7 @@ def encode_bytes(obj, data_list):
         data_list.extend((int2byte(STR_FIXED_START + len(obj)), obj))
     else:
         string = bytes(str(len(obj)), ASCII)
-        data_list.extend((string, b':', obj))
+        data_list.extend((string, b":", obj))
 
 
 def encode_string(obj, data_list):
@@ -105,11 +105,11 @@ def dumps(obj, float_bits=DEFAULT_FLOAT_BITS):
             encode_func[float] = encode_float64
         else:
             raise ValueError(
-                'Float bits {float_bits} is not 32 or 64'.format(
+                "Float bits {float_bits} is not 32 or 64".format(
                     float_bits=float_bits
                 )
             )
         data_list = []
         encode_func[type(obj)](obj, data_list)
 
-    return b''.join(data_list)
+    return b"".join(data_list)
