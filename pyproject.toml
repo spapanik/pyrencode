@@ -6,7 +6,7 @@ py36 = true
 name = "pyrencode"
 version = "0.1.3"
 description = "A pure python rencoder"
-authors = ["Steph Papanik <spapanik21@gmail.com>"]
+authors = ["spapanik <spapanik21@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
