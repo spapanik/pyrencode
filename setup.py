@@ -15,7 +15,7 @@ setup(
     version=__version__,
     description="A pure python rencoder",
     license="MIT",
-    long_description=contents("README.txt"),
+    long_description=contents("readme.md"),
     author="Stephanos Papanikolopoulos",
     author_email="spapanik21@gmail.com",
     url="https://github.com/spapanik/{pkg_name}".format(pkg_name=PKG_NAME),
