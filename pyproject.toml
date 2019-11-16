@@ -14,6 +14,10 @@ python = "^3.6"
 
 [tool.poetry.dev-dependencies]
 black = {version = "*", allows-prereleases = true}
-pytest = "^4.4"
-ipython = "^7.2"
+
+pytest = "^5.1"
+pytest-cov = "^2.8"
+coveralls = "^1.8"
+
+ipython = "^7.8"
 ipdb = "^0.12"
