@@ -1,7 +1,7 @@
-from pyrencode.encode import dumps
-from pyrencode.decode import loads
-
 import struct
+
+from pyrencode.decode import loads
+from pyrencode.encode import dumps
 
 f1 = struct.unpack("!f", struct.pack("!f", 25.5))[0]
 f2 = struct.unpack("!f", struct.pack("!f", 29.3))[0]

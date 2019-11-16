@@ -1,5 +1,5 @@
-from pyrencode.settings.utils import *
 from pyrencode.settings.constants import *
+from pyrencode.settings.utils import *
 
 # Default number of bits for serialized floats,
 # either 32 or 64 (also a parameter for dumps()).

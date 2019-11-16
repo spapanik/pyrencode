@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 __author__ = "spapanik"
-__version__ = '0.1.4'
+__version__ = "0.1.4"
 __license__ = "MIT"
 
 PKG_NAME = "pyrencode"
