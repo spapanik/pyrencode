@@ -105,9 +105,7 @@ def dumps(obj, float_bits=DEFAULT_FLOAT_BITS):
             encode_func[float] = encode_float64
         else:
             raise ValueError(
-                "Float bits {float_bits} is not 32 or 64".format(
-                    float_bits=float_bits
-                )
+                "Float bits {float_bits} is not 32 or 64".format(float_bits=float_bits)
             )
         data_list = []
         encode_func[type(obj)](obj, data_list)

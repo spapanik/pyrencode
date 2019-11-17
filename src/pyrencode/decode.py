@@ -65,9 +65,7 @@ def decode_string(bytes_obj, cursor):
 def decode_list(bytes_obj, cursor):
     r, cursor = [], cursor + 1
     while bytes_obj[cursor : cursor + 1] != CHR_TERM:
-        v, cursor = decode_func[bytes_obj[cursor : cursor + 1]](
-            bytes_obj, cursor
-        )
+        v, cursor = decode_func[bytes_obj[cursor : cursor + 1]](bytes_obj, cursor)
         r.append(v)
     return tuple(r), cursor + 1
 
