@@ -1,14 +1,15 @@
 import struct
 
-from pyrencode.settings import *
+from pyrencode.settings import constants
+from pyrencode.settings.utils import int2byte
 
-_decode_utf8 = DECODE_UTF8
+_decode_utf8 = constants.DECODE_UTF8
 
 
 def decode_int(bytes_obj, cursor):
     cursor += 1
-    new_cursor = bytes_obj.index(CHR_TERM, cursor)
-    if new_cursor - cursor >= MAX_INT_LENGTH:
+    new_cursor = bytes_obj.index(constants.CHR_TERM, cursor)
+    if new_cursor - cursor >= constants.MAX_INT_LENGTH:
         raise ValueError("overflow")
     n = int(bytes_obj[cursor:new_cursor])
     if bytes_obj[cursor : cursor + 1] == "-":
@@ -64,7 +65,7 @@ def decode_string(bytes_obj, cursor):
 
 def decode_list(bytes_obj, cursor):
     r, cursor = [], cursor + 1
-    while bytes_obj[cursor : cursor + 1] != CHR_TERM:
+    while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
         v, cursor = decode_func[bytes_obj[cursor : cursor + 1]](bytes_obj, cursor)
         r.append(v)
     return tuple(r), cursor + 1
@@ -72,7 +73,7 @@ def decode_list(bytes_obj, cursor):
 
 def decode_dict(x, cursor):
     r, cursor = {}, cursor + 1
-    while x[cursor : cursor + 1] != CHR_TERM:
+    while x[cursor : cursor + 1] != constants.CHR_TERM:
         k, cursor = decode_func[x[cursor : cursor + 1]](x, cursor)
         r[k], cursor = decode_func[x[cursor : cursor + 1]](x, cursor)
     return r, cursor + 1
@@ -101,18 +102,18 @@ decode_func = {
     b"7": decode_string,
     b"8": decode_string,
     b"9": decode_string,
-    CHR_LIST: decode_list,
-    CHR_DICT: decode_dict,
-    CHR_INT: decode_int,
-    CHR_INT1: decode_int1,
-    CHR_INT2: decode_int2,
-    CHR_INT4: decode_int3,
-    CHR_INT8: decode_int4,
-    CHR_FLOAT32: decode_float32,
-    CHR_FLOAT64: decode_float64,
-    CHR_TRUE: decode_true,
-    CHR_FALSE: decode_false,
-    CHR_NONE: decode_none,
+    constants.CHR_LIST: decode_list,
+    constants.CHR_DICT: decode_dict,
+    constants.CHR_INT: decode_int,
+    constants.CHR_INT1: decode_int1,
+    constants.CHR_INT2: decode_int2,
+    constants.CHR_INT4: decode_int3,
+    constants.CHR_INT8: decode_int4,
+    constants.CHR_FLOAT32: decode_float32,
+    constants.CHR_FLOAT64: decode_float64,
+    constants.CHR_TRUE: decode_true,
+    constants.CHR_FALSE: decode_false,
+    constants.CHR_NONE: decode_none,
 }
 
 
@@ -126,8 +127,8 @@ def make_fixed_length_string_decoders():
 
         return func
 
-    for i in range(STR_FIXED_COUNT):
-        decode_func[int2byte(STR_FIXED_START + i)] = make_decoder(i)
+    for i in range(constants.STR_FIXED_COUNT):
+        decode_func[int2byte(constants.STR_FIXED_START + i)] = make_decoder(i)
 
 
 make_fixed_length_string_decoders()
@@ -144,8 +145,8 @@ def make_fixed_length_list_decoders():
 
         return func
 
-    for i in range(LIST_FIXED_COUNT):
-        decode_func[int2byte(LIST_FIXED_START + i)] = make_decoder(i)
+    for i in range(constants.LIST_FIXED_COUNT):
+        decode_func[int2byte(constants.LIST_FIXED_START + i)] = make_decoder(i)
 
 
 make_fixed_length_list_decoders()
@@ -158,10 +159,10 @@ def make_fixed_length_int_decoders():
 
         return func
 
-    for i in range(INT_POS_FIXED_COUNT):
-        decode_func[int2byte(INT_POS_FIXED_START + i)] = make_decoder(i)
-    for i in range(INT_NEG_FIXED_COUNT):
-        decode_func[int2byte(INT_NEG_FIXED_START + i)] = make_decoder(-1 - i)
+    for i in range(constants.INT_POS_FIXED_COUNT):
+        decode_func[int2byte(constants.INT_POS_FIXED_START + i)] = make_decoder(i)
+    for i in range(constants.INT_NEG_FIXED_COUNT):
+        decode_func[int2byte(constants.INT_NEG_FIXED_START + i)] = make_decoder(-1 - i)
 
 
 make_fixed_length_int_decoders()
@@ -178,8 +179,8 @@ def make_fixed_length_dict_decoders():
 
         return func
 
-    for i in range(DICT_FIXED_COUNT):
-        decode_func[int2byte(DICT_FIXED_START + i)] = make_decoder(i)
+    for i in range(constants.DICT_FIXED_COUNT):
+        decode_func[int2byte(constants.DICT_FIXED_START + i)] = make_decoder(i)
 
 
 make_fixed_length_dict_decoders()
