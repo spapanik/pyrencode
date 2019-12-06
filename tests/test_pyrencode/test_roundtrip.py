@@ -58,7 +58,7 @@ def test_tuple_of_bytes():
             b"a" * 1000000,
             b"a" * 10000000,
         )
-        + tuple([b"a" * n for n in range(1000)])
+        + tuple(b"a" * n for n in range(1000))
         + (b"b",)
     )
     assert loads(dumps(obj)) == obj
@@ -66,15 +66,15 @@ def test_tuple_of_bytes():
 
 def test_tuple_of_dicts():
     obj = (
-        tuple([dict(zip(range(n), range(n))) for n in range(100)])
-        + tuple([dict(zip(range(n), range(-n, 0))) for n in range(100)])
+        tuple(dict(zip(range(n), range(n))) for n in range(100))
+        + tuple(dict(zip(range(n), range(-n, 0))) for n in range(100))
         + (b"b",)
     )
     assert loads(dumps(obj)) == obj
 
 
 def test_tuple_of_tuples():
-    obj = tuple([tuple(range(n)) for n in range(100)]) + (b"b",)
+    obj = tuple(tuple(range(n)) for n in range(100)) + (b"b",)
     assert loads(dumps(obj)) == obj
 
 
