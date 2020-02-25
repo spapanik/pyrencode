@@ -8,6 +8,9 @@ vars = [
 ]
 
 [all]
+alias = "install"
+
+[install]
 phony = true
 requires = ["requirements.txt"]
 commands = [
@@ -45,5 +48,5 @@ commands = [
 requires = ["poetry.lock"]
 commands = [
     "poetry install ${poetry_extra}",
-    "poetry export --without-hashes -f requirements.txt -o requirements.txt",
+    "poetry export --without-hashes -f requirements.txt -o ${.target}",
 ]
