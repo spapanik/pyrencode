@@ -27,7 +27,7 @@ include = ["CHANGELOG.md"]
 repository = "https://github.com/spapanik/pyrencode"
 
 keywords = ["encoding"]
-classifiers=[
+classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Operating System :: OS Independent",
 ]
