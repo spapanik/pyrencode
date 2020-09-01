@@ -8,10 +8,11 @@ python:
 install:
   - "pip install poetry"
   - "pip install yamk"
-  - "yam requirements.txt"
+  - "yam"
 
 script:
-  - "yam tests"
+  - "yamk lint"
+  - "yamk tests"
 
 after_success:
   - coveralls
