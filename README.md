@@ -1,6 +1,6 @@
 <p align="center">
-<a href="https://travis-ci.org/spapanik/pyrencode"><img alt="Build" src="https://travis-ci.org/spapanik/pyrencode.svg?branch=master"></a>
-<a href="https://coveralls.io/github/spapanik/pyrencode"><img alt="Coverage" src="https://coveralls.io/repos/github/spapanik/pyrencode/badge.svg?branch=master"></a>
+<a href="https://github.com/spapanik/pyrencode/actions/workflows/build.yml"><img alt="Build" src="https://github.com/spapanik/pyrencode/actions/workflows/build.yml/badge.svg"></a>
+<a href="https://lgtm.com/projects/g/spapanik/pyrencode/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/spapanik/pyrencode.svg"/></a>
 <a href="https://github.com/spapanik/pyrencode/blob/master/LICENSE.txt"><img alt="License" src="https://img.shields.io/github/license/spapanik/pyrencode"></a>
 <a href="https://pypi.org/project/pyrencode"><img alt="PyPI" src="https://img.shields.io/pypi/v/pyrencode"></a>
 <a href="https://pepy.tech/project/pyrencode"><img alt="Downloads" src="https://pepy.tech/badge/pyrencode"></a>
