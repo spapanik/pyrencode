@@ -1,8 +1,8 @@
 import struct
 from threading import Lock
 
-from pyrencode.settings import constants
-from pyrencode.settings.utils import int2byte
+from pyrencode import constants
+from pyrencode.utils import int2byte
 
 
 def encode_int(obj, data_list):

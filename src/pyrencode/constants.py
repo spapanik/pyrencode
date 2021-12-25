@@ -1,4 +1,4 @@
-from pyrencode.settings.utils import int2byte
+from pyrencode.utils import int2byte
 
 # The bencode 'typecodes' such as i, d, etc have been extended and
 # relocated on the base-256 character set.

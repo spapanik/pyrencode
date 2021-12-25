@@ -1,7 +1,7 @@
 import struct
 
-from pyrencode.settings import constants
-from pyrencode.settings.utils import int2byte
+from pyrencode import constants
+from pyrencode.utils import int2byte
 
 _decode_utf8 = constants.DECODE_UTF8
 
