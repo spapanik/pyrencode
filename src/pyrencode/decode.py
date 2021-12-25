@@ -1,4 +1,5 @@
 import struct
+from typing import Any, Tuple, Union
 
 from pyrencode import constants
 from pyrencode.utils import int2byte
@@ -6,7 +7,7 @@ from pyrencode.utils import int2byte
 _decode_utf8 = constants.DECODE_UTF8
 
 
-def decode_int(bytes_obj, cursor):
+def decode_int(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
     cursor += 1
     new_cursor = bytes_obj.index(constants.CHR_TERM, cursor)
     if new_cursor - cursor >= constants.MAX_INT_LENGTH:
@@ -21,37 +22,37 @@ def decode_int(bytes_obj, cursor):
     return n, new_cursor + 1
 
 
-def decode_int1(bytes_obj, cursor):
+def decode_int1(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
     cursor += 1
     return struct.unpack("!b", bytes_obj[cursor : cursor + 1])[0], cursor + 1
 
 
-def decode_int2(bytes_obj, cursor):
+def decode_int2(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
     cursor += 1
     return struct.unpack("!h", bytes_obj[cursor : cursor + 2])[0], cursor + 2
 
 
-def decode_int3(bytes_obj, cursor):
+def decode_int3(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
     cursor += 1
     return struct.unpack("!l", bytes_obj[cursor : cursor + 4])[0], cursor + 4
 
 
-def decode_int4(bytes_obj, cursor):
+def decode_int4(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
     cursor += 1
     return struct.unpack("!q", bytes_obj[cursor : cursor + 8])[0], cursor + 8
 
 
-def decode_float32(bytes_obj, cursor):
+def decode_float32(bytes_obj: bytes, cursor: int) -> Tuple[float, int]:
     cursor += 1
     return struct.unpack("!f", bytes_obj[cursor : cursor + 4])[0], cursor + 4
 
 
-def decode_float64(bytes_obj, cursor):
+def decode_float64(bytes_obj: bytes, cursor: int) -> Tuple[float, int]:
     cursor += 1
     return struct.unpack("!d", bytes_obj[cursor : cursor + 8])[0], cursor + 8
 
 
-def decode_string(bytes_obj, cursor):
+def decode_string(bytes_obj: bytes, cursor: int) -> Tuple[Union[str, bytes], int]:
     colon = bytes_obj.index(b":", cursor)
     n = int(bytes_obj[cursor:colon])
     if bytes_obj[cursor] == "0" and colon != cursor + 1:
@@ -59,11 +60,11 @@ def decode_string(bytes_obj, cursor):
     colon += 1
     string = bytes_obj[colon : colon + n]
     if _decode_utf8:
-        string = string.decode("utf8")
+        return string.decode("utf8"), colon + n
     return string, colon + n
 
 
-def decode_list(bytes_obj, cursor):
+def decode_list(bytes_obj: bytes, cursor: int) -> Tuple[tuple, int]:
     r, cursor = [], cursor + 1
     while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
         v, cursor = decode_func[bytes_obj[cursor : cursor + 1]](bytes_obj, cursor)
@@ -71,7 +72,7 @@ def decode_list(bytes_obj, cursor):
     return tuple(r), cursor + 1
 
 
-def decode_dict(x, cursor):
+def decode_dict(x, cursor: int) -> Tuple[dict, int]:
     r, cursor = {}, cursor + 1
     while x[cursor : cursor + 1] != constants.CHR_TERM:
         k, cursor = decode_func[x[cursor : cursor + 1]](x, cursor)
@@ -79,15 +80,15 @@ def decode_dict(x, cursor):
     return r, cursor + 1
 
 
-def decode_true(_, cursor):
+def decode_true(_, cursor: int) -> Tuple[bool, int]:
     return True, cursor + 1
 
 
-def decode_false(_, cursor):
+def decode_false(_, cursor: int) -> Tuple[bool, int]:
     return False, cursor + 1
 
 
-def decode_none(_, cursor):
+def decode_none(_, cursor: int) -> Tuple[None, int]:
     return None, cursor + 1
 
 
@@ -186,7 +187,7 @@ def make_fixed_length_dict_decoders():
 make_fixed_length_dict_decoders()
 
 
-def loads(bytes_obj, decode_utf8=False):
+def loads(bytes_obj: bytes, decode_utf8: bool = False) -> Any:
     global _decode_utf8
     _decode_utf8 = decode_utf8
     try:
