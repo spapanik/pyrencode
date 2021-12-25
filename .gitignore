@@ -3,10 +3,6 @@ __pycache__/
 .mypy_cache/
 .pytest_cache/
 
-# tests
-.coverage
-htmlcov/
-
 # installation artifacts
 .yamk/
 poetry.lock
