@@ -1,5 +1,4 @@
 import struct
-from threading import Lock
 from typing import Any, List
 
 from pyrencode import constants
@@ -95,19 +94,16 @@ encode_func = {
     bool: encode_bool,
 }
 
-lock = Lock()
-
 
 def dumps(obj: Any, float_bits: int = constants.DEFAULT_FLOAT_BITS) -> bytes:
+    if float_bits == 32:
+        encode_func[float] = encode_float32
+    elif float_bits == 64:
+        encode_func[float] = encode_float64
+    else:
+        raise ValueError(f"Float bits {float_bits} is not 32 or 64")
+
     data_list: List[bytes] = []
-    with lock:
-        if float_bits == 32:
-            encode_func[float] = encode_float32
-        elif float_bits == 64:
-            encode_func[float] = encode_float64
-        else:
-            raise ValueError(f"Float bits {float_bits} is not 32 or 64")
-        data_list = []
-        encode_func[type(obj)](obj, data_list)
+    encode_func[type(obj)](obj, data_list)
 
     return b"".join(data_list)
