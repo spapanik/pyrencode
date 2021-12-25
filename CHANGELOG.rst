@@ -36,7 +36,8 @@ Added
 ---------------------
 
 
-.. _`unreleased`: https://github.com/spapanik/pyrencode/compare/v0.1.4...master
+.. _`unreleased`: https://github.com/spapanik/pyrencode/compare/v0.2.0...master
+.. _`0.2.0`: https://github.com/spapanik/pyrencode/compare/v0.1.4...v0.2.0
 .. _`0.1.4`: https://github.com/spapanik/pyrencode/compare/v0.1.3...v0.1.4
 .. _`0.1.3`: https://github.com/spapanik/pyrencode/compare/v0.0.5...v0.1.3
 .. _`0.0.5`: https://github.com/spapanik/pyrencode/compare/v0.0.4...v0.0.5
