@@ -9,6 +9,8 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 `Unreleased`_
 -------------
 
+`0.2.0`_ - 2021-12-25
+---------------------
 Added
 ^^^^^
 * Added python310 support
