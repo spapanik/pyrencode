@@ -1,11 +1,11 @@
 import struct
-from typing import Any, List
+from typing import Any, Callable, Dict, List
 
 from pyrencode import constants
 from pyrencode.utils import int2byte
 
 
-def encode_int(obj: Any, data_list: List[bytes]) -> None:
+def encode_int(obj: int, data_list: List[bytes]) -> None:
     if 0 <= obj < constants.INT_POS_FIXED_COUNT:
         data_list.append(int2byte(constants.INT_POS_FIXED_START + obj))
     elif -constants.INT_NEG_FIXED_COUNT <= obj < 0:
@@ -26,26 +26,26 @@ def encode_int(obj: Any, data_list: List[bytes]) -> None:
         data_list.extend((constants.CHR_INT, s, constants.CHR_TERM))
 
 
-def encode_float32(obj: Any, data_list: List[bytes]) -> None:
+def encode_float32(obj: float, data_list: List[bytes]) -> None:
     data_list.extend((constants.CHR_FLOAT32, struct.pack("!f", obj)))
 
 
-def encode_float64(obj: Any, data_list: List[bytes]) -> None:
+def encode_float64(obj: float, data_list: List[bytes]) -> None:
     data_list.extend((constants.CHR_FLOAT64, struct.pack("!d", obj)))
 
 
-def encode_bool(obj: Any, data_list: List[bytes]) -> None:
+def encode_bool(obj: bool, data_list: List[bytes]) -> None:
     if obj:
         data_list.append(constants.CHR_TRUE)
     else:
         data_list.append(constants.CHR_FALSE)
 
 
-def encode_none(_, data_list):
+def encode_none(_obj: None, data_list: List[bytes]) -> None:
     data_list.append(constants.CHR_NONE)
 
 
-def encode_bytes(obj: Any, data_list: List[bytes]) -> None:
+def encode_bytes(obj: bytes, data_list: List[bytes]) -> None:
     if len(obj) < constants.STR_FIXED_COUNT:
         data_list.extend((int2byte(constants.STR_FIXED_START + len(obj)), obj))
     else:
@@ -53,11 +53,11 @@ def encode_bytes(obj: Any, data_list: List[bytes]) -> None:
         data_list.extend((string, b":", obj))
 
 
-def encode_string(obj: Any, data_list: List[bytes]) -> None:
+def encode_string(obj: str, data_list: List[bytes]) -> None:
     encode_bytes(obj.encode(constants.UTF8), data_list)
 
 
-def encode_list(obj: Any, data_list: List[bytes]) -> None:
+def encode_list(obj: list, data_list: List[bytes]) -> None:
     if len(obj) < constants.LIST_FIXED_COUNT:
         data_list.append(int2byte(constants.LIST_FIXED_START + len(obj)))
         for item in obj:
@@ -69,7 +69,7 @@ def encode_list(obj: Any, data_list: List[bytes]) -> None:
         data_list.append(constants.CHR_TERM)
 
 
-def encode_dict(obj: Any, data_list: List[bytes]) -> None:
+def encode_dict(obj: dict, data_list: List[bytes]) -> None:
     if len(obj) < constants.DICT_FIXED_COUNT:
         data_list.append(int2byte(constants.DICT_FIXED_START + len(obj)))
         for key, value in obj.items():
@@ -83,7 +83,7 @@ def encode_dict(obj: Any, data_list: List[bytes]) -> None:
         data_list.append(constants.CHR_TERM)
 
 
-encode_func = {
+encode_func: Dict[type, Callable[[Any, List[bytes]], None]] = {
     int: encode_int,
     bytes: encode_bytes,
     list: encode_list,
