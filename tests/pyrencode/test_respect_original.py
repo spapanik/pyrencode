@@ -1,11 +1,10 @@
 import struct
 
 import pytest
-from rencode import loads as loads_orig
 from rencode import dumps as dumps_orig
+from rencode import loads as loads_orig
 
-from pyrencode import loads
-from pyrencode import dumps
+from pyrencode import dumps, loads
 
 f1 = struct.unpack("!f", struct.pack("!f", 25.5))[0]
 f2 = struct.unpack("!f", struct.pack("!f", 29.3))[0]
