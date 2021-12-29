@@ -2,7 +2,7 @@
 Installation
 ============
 
-The easiest way is to use `poetry`_ to manage your dependencies and add *dj_settings* to them.
+The easiest way is to use `poetry`_ to manage your dependencies and add *pyrencode* to them.
 
 .. code-block:: toml
 
