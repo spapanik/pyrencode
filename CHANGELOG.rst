@@ -13,6 +13,10 @@ Added
 ^^^^^
 * Added type hints
 
+Removed
+^^^^^^^
+* Removed changelog from the published wheel
+
 `0.2.0`_ - 2021-12-25
 ---------------------
 
