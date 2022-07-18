@@ -191,7 +191,7 @@ def loads(bytes_obj: bytes, decode_utf8: bool = False) -> Any:
     global _decode_utf8
     _decode_utf8 = decode_utf8
     try:
-        obj, end_position = decode_func[bytes_obj[0:1]](bytes_obj, 0)
+        obj, end_position = decode_func[bytes_obj[:1]](bytes_obj, 0)
     except (IndexError, KeyError):
         raise ValueError
     if end_position != len(bytes_obj):

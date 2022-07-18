@@ -39,7 +39,7 @@ def test_mixed_types_tuple():
 
 
 def test_tuple_of_updated_dict():
-    d: Dict[Any, Any] = dict(zip(range(-100000, 100000), range(-100000, 100000)))
+    d: Dict[Any, Any] = {i: i for i in range(-100000, 100000)}
     d.update(
         {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
     )
