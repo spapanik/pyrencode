@@ -1,4 +1,5 @@
 import struct
+from typing import Any, Dict, Tuple
 
 from pyrencode.decode import loads
 from pyrencode.encode import dumps
@@ -38,11 +39,17 @@ def test_mixed_types_tuple():
 
 
 def test_tuple_of_updated_dict():
-    d = dict(zip(range(-100000, 100000), range(-100000, 100000)))
+    d: Dict[Any, Any] = dict(zip(range(-100000, 100000), range(-100000, 100000)))
     d.update(
         {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
     )
-    obj = (d, {}, {5: 6}, {7: 7, True: 8}, {9: 10, 22: 39, 49: 50, 44: b""})
+    obj: Tuple[Any, ...] = (
+        d,
+        {},
+        {5: 6},
+        {7: 7, True: 8},
+        {9: 10, 22: 39, 49: 50, 44: b""},
+    )
     assert loads(dumps(obj)) == obj
 
 

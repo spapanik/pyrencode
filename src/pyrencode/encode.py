@@ -57,7 +57,7 @@ def encode_string(obj: str, data_list: List[bytes]) -> None:
     encode_bytes(obj.encode(constants.UTF8), data_list)
 
 
-def encode_list(obj: list, data_list: List[bytes]) -> None:
+def encode_list(obj: List[Any], data_list: List[bytes]) -> None:
     if len(obj) < constants.LIST_FIXED_COUNT:
         data_list.append(int2byte(constants.LIST_FIXED_START + len(obj)))
         for item in obj:
@@ -69,7 +69,7 @@ def encode_list(obj: list, data_list: List[bytes]) -> None:
         data_list.append(constants.CHR_TERM)
 
 
-def encode_dict(obj: dict, data_list: List[bytes]) -> None:
+def encode_dict(obj: Dict[Any, Any], data_list: List[bytes]) -> None:
     if len(obj) < constants.DICT_FIXED_COUNT:
         data_list.append(int2byte(constants.DICT_FIXED_START + len(obj)))
         for key, value in obj.items():

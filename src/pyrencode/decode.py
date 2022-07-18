@@ -1,5 +1,5 @@
 import struct
-from typing import Any, Tuple, Union
+from typing import Any, Dict, Tuple, Union
 
 from pyrencode import constants
 from pyrencode.utils import int2byte
@@ -64,7 +64,7 @@ def decode_string(bytes_obj: bytes, cursor: int) -> Tuple[Union[str, bytes], int
     return string, colon + n
 
 
-def decode_list(bytes_obj: bytes, cursor: int) -> Tuple[tuple, int]:
+def decode_list(bytes_obj: bytes, cursor: int) -> Tuple[Tuple[Any, ...], int]:
     r, cursor = [], cursor + 1
     while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
         v, cursor = decode_func[bytes_obj[cursor : cursor + 1]](bytes_obj, cursor)
@@ -72,7 +72,7 @@ def decode_list(bytes_obj: bytes, cursor: int) -> Tuple[tuple, int]:
     return tuple(r), cursor + 1
 
 
-def decode_dict(x, cursor: int) -> Tuple[dict, int]:
+def decode_dict(x, cursor: int) -> Tuple[Dict[Any, Any], int]:
     r, cursor = {}, cursor + 1
     while x[cursor : cursor + 1] != constants.CHR_TERM:
         k, cursor = decode_func[x[cursor : cursor + 1]](x, cursor)
