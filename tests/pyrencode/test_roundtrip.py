@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import struct
-from typing import Any, Dict, Tuple
+from typing import Any
 
 from pyrencode.decode import loads
 from pyrencode.encode import dumps
@@ -39,11 +41,11 @@ def test_mixed_types_tuple():
 
 
 def test_tuple_of_updated_dict():
-    d: Dict[Any, Any] = {i: i for i in range(-100000, 100000)}
+    d: dict[Any, Any] = {i: i for i in range(-100000, 100000)}
     d.update(
         {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
     )
-    obj: Tuple[Any, ...] = (
+    obj: tuple[Any, ...] = (
         d,
         {},
         {5: 6},

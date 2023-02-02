@@ -5,9 +5,6 @@ pyrencode: rencode in pure python
 .. image:: https://github.com/spapanik/pyrencode/actions/workflows/build.yml/badge.svg
   :alt: Build
   :target: https://github.com/spapanik/pyrencode/actions/workflows/build.yml
-.. image:: https://img.shields.io/lgtm/alerts/g/spapanik/pyrencode.svg
-  :alt: Total alerts
-  :target: https://lgtm.com/projects/g/spapanik/pyrencode/alerts/
 .. image:: https://img.shields.io/github/license/spapanik/pyrencode
   :alt: License
   :target: https://github.com/spapanik/pyrencode/blob/main/LICENSE.txt

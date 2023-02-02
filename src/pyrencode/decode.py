@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 import struct
-from typing import Any, Dict, Tuple, Union
+from typing import Any
 
 from pyrencode import constants
 from pyrencode.utils import int2byte
@@ -7,7 +9,7 @@ from pyrencode.utils import int2byte
 _decode_utf8 = constants.DECODE_UTF8
 
 
-def decode_int(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
+def decode_int(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
     cursor += 1
     new_cursor = bytes_obj.index(constants.CHR_TERM, cursor)
     if new_cursor - cursor >= constants.MAX_INT_LENGTH:
@@ -22,37 +24,37 @@ def decode_int(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
     return n, new_cursor + 1
 
 
-def decode_int1(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
+def decode_int1(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
     cursor += 1
     return struct.unpack("!b", bytes_obj[cursor : cursor + 1])[0], cursor + 1
 
 
-def decode_int2(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
+def decode_int2(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
     cursor += 1
     return struct.unpack("!h", bytes_obj[cursor : cursor + 2])[0], cursor + 2
 
 
-def decode_int3(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
+def decode_int3(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
     cursor += 1
     return struct.unpack("!l", bytes_obj[cursor : cursor + 4])[0], cursor + 4
 
 
-def decode_int4(bytes_obj: bytes, cursor: int) -> Tuple[int, int]:
+def decode_int4(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
     cursor += 1
     return struct.unpack("!q", bytes_obj[cursor : cursor + 8])[0], cursor + 8
 
 
-def decode_float32(bytes_obj: bytes, cursor: int) -> Tuple[float, int]:
+def decode_float32(bytes_obj: bytes, cursor: int) -> tuple[float, int]:
     cursor += 1
     return struct.unpack("!f", bytes_obj[cursor : cursor + 4])[0], cursor + 4
 
 
-def decode_float64(bytes_obj: bytes, cursor: int) -> Tuple[float, int]:
+def decode_float64(bytes_obj: bytes, cursor: int) -> tuple[float, int]:
     cursor += 1
     return struct.unpack("!d", bytes_obj[cursor : cursor + 8])[0], cursor + 8
 
 
-def decode_string(bytes_obj: bytes, cursor: int) -> Tuple[Union[str, bytes], int]:
+def decode_string(bytes_obj: bytes, cursor: int) -> tuple[str | bytes, int]:
     colon = bytes_obj.index(b":", cursor)
     n = int(bytes_obj[cursor:colon])
     if bytes_obj[cursor] == "0" and colon != cursor + 1:
@@ -64,7 +66,7 @@ def decode_string(bytes_obj: bytes, cursor: int) -> Tuple[Union[str, bytes], int
     return string, colon + n
 
 
-def decode_list(bytes_obj: bytes, cursor: int) -> Tuple[Tuple[Any, ...], int]:
+def decode_list(bytes_obj: bytes, cursor: int) -> tuple[tuple[Any, ...], int]:
     r, cursor = [], cursor + 1
     while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
         v, cursor = decode_func[bytes_obj[cursor : cursor + 1]](bytes_obj, cursor)
@@ -72,7 +74,7 @@ def decode_list(bytes_obj: bytes, cursor: int) -> Tuple[Tuple[Any, ...], int]:
     return tuple(r), cursor + 1
 
 
-def decode_dict(x, cursor: int) -> Tuple[Dict[Any, Any], int]:
+def decode_dict(x, cursor: int) -> tuple[dict[Any, Any], int]:
     r, cursor = {}, cursor + 1
     while x[cursor : cursor + 1] != constants.CHR_TERM:
         k, cursor = decode_func[x[cursor : cursor + 1]](x, cursor)
@@ -80,15 +82,15 @@ def decode_dict(x, cursor: int) -> Tuple[Dict[Any, Any], int]:
     return r, cursor + 1
 
 
-def decode_true(_, cursor: int) -> Tuple[bool, int]:
+def decode_true(_, cursor: int) -> tuple[bool, int]:
     return True, cursor + 1
 
 
-def decode_false(_, cursor: int) -> Tuple[bool, int]:
+def decode_false(_, cursor: int) -> tuple[bool, int]:
     return False, cursor + 1
 
 
-def decode_none(_, cursor: int) -> Tuple[None, int]:
+def decode_none(_, cursor: int) -> tuple[None, int]:
     return None, cursor + 1
 
 
