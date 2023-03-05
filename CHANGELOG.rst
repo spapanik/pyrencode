@@ -16,6 +16,7 @@ Added
 Removed
 ^^^^^^^
 * Removed changelog from the published wheel
+* Dropped python37 support
 
 `0.2.0`_ - 2021-12-25
 ---------------------
