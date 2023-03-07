@@ -20,21 +20,42 @@ warn_unused_configs = true
 [tool.ruff]
 select = [
     "A",
+    "ARG",
     "B",
+    "BLE",
     "C4",
+    "DTZ",
     "E",
     "ERA",
     "EXE",
     "F",
+    "FBT",
     "G",
     "I",
+    "INP",
+    "ISC",
     "N",
+    "PGH",
+    "PIE",
+    "PLC",
+    "PLE",
+    "PLW",
     "PTH",
+    "RET",
+    "RSE",
+    "RUF",
+    "SIM",
+    "SLF",
     "T10",
     "TID",
+    "TRY",
     "UP",
+    "W",
 ]
-ignore = ["E501"]
+ignore = [
+    "E501",
+    "TRY003",
+]
 src = ["src"]
 target-version = "py38"
 
@@ -51,7 +72,7 @@ testpaths = "tests"
 
 [tool.coverage.run]
 source = ["src/"]
-data_file = ".coverage_cache/coverage.dat"
+data_file = ".cov_cache/coverage.dat"
 
 [tool.poetry]
 name = "pyrencode"

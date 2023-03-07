@@ -36,7 +36,7 @@ def encode_float64(obj: float, data_list: list[bytes]) -> None:
     data_list.extend((constants.CHR_FLOAT64, struct.pack("!d", obj)))
 
 
-def encode_bool(obj: bool, data_list: list[bytes]) -> None:
+def encode_bool(obj: bool, data_list: list[bytes]) -> None:  # noqa: FBT001
     if obj:
         data_list.append(constants.CHR_TRUE)
     else:

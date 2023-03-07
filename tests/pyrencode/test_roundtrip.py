@@ -57,18 +57,16 @@ def test_tuple_of_updated_dict():
 
 def test_tuple_of_bytes():
     obj = (
-        (
-            b"",
-            b"a" * 10,
-            b"a" * 100,
-            b"a" * 1000,
-            b"a" * 10000,
-            b"a" * 100000,
-            b"a" * 1000000,
-            b"a" * 10000000,
-        )
-        + tuple(b"a" * n for n in range(1000))
-        + (b"b",)
+        b"",
+        b"a" * 10,
+        b"a" * 100,
+        b"a" * 1000,
+        b"a" * 10000,
+        b"a" * 100000,
+        b"a" * 1000000,
+        b"a" * 10000000,
+        *tuple(b"a" * n for n in range(1000)),
+        b"b",
     )
     assert loads(dumps(obj)) == obj
 
@@ -83,7 +81,7 @@ def test_tuple_of_dicts():
 
 
 def test_tuple_of_tuples():
-    obj = tuple(tuple(range(n)) for n in range(100)) + (b"b",)
+    obj = (*tuple(tuple(range(n)) for n in range(100)), b"b")
     assert loads(dumps(obj)) == obj
 
 

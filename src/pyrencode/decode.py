@@ -189,8 +189,8 @@ def make_fixed_length_dict_decoders():
 make_fixed_length_dict_decoders()
 
 
-def loads(bytes_obj: bytes, decode_utf8: bool = False) -> Any:
-    global _decode_utf8
+def loads(bytes_obj: bytes, *, decode_utf8: bool = False) -> Any:
+    global _decode_utf8  # noqa: PLW0603
     _decode_utf8 = decode_utf8
     try:
         obj, end_position = decode_func[bytes_obj[:1]](bytes_obj, 0)
