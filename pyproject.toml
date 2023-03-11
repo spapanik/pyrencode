@@ -40,10 +40,12 @@ select = [
     "PLC",
     "PLE",
     "PLW",
+    "PT",
     "PTH",
     "RET",
     "RSE",
     "RUF",
+    "S",
     "SIM",
     "SLF",
     "T10",
@@ -58,6 +60,9 @@ ignore = [
 ]
 src = ["src"]
 target-version = "py38"
+
+[tool.ruff.per-file-ignores]
+"tests/**" = ["S101"]
 
 [tool.ruff.flake8-tidy-imports]
 ban-relative-imports = "all"
@@ -85,7 +90,9 @@ authors = [
 license = "LGPL-3.0+"
 readme = "README.rst"
 
+homepage = "https://pyrencode.readthedocs.io/en/stable/"
 repository = "https://github.com/spapanik/pyrencode"
+documentation = "https://pyrencode.readthedocs.io/en/stable/"
 
 keywords = ["encoding"]
 classifiers = [

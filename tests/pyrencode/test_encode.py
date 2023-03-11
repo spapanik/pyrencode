@@ -12,4 +12,4 @@ def test_encode_int_over_max_size():
 
 
 def test_dumps_wrong_float_bits():
-    pytest.raises(ValueError, encode.dumps, None, float_bits=128)
+    pytest.raises(ValueError, encode.dumps, None, float_bits=128)  # noqa: PT011
