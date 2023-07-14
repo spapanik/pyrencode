@@ -120,5 +120,5 @@ pytest-cov = "^4.0"
 rencode = "^1.0"
 
 [tool.poetry.group.docs.dependencies]
-sphinx = "^6.1"
-sphinx-rtd-theme = "^1.2"
+furo = "^2023.5"
+sphinx = "^7.0"
