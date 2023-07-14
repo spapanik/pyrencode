@@ -1,8 +1,7 @@
 import struct
 
 import pytest
-from rencode import dumps as dumps_orig
-from rencode import loads as loads_orig
+from rencode import dumps as dumps_orig, loads as loads_orig
 
 from pyrencode import dumps, loads
 
