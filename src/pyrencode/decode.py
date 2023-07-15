@@ -120,8 +120,8 @@ decode_func = {
 }
 
 
-def make_fixed_length_string_decoders():
-    def make_decoder(slen):
+def make_fixed_length_string_decoders() -> None:
+    def make_decoder(slen: int):
         def func(x, f):
             s = x[f + 1 : f + 1 + slen]
             if _decode_utf8:
@@ -137,8 +137,8 @@ def make_fixed_length_string_decoders():
 make_fixed_length_string_decoders()
 
 
-def make_fixed_length_list_decoders():
-    def make_decoder(slen):
+def make_fixed_length_list_decoders() -> None:
+    def make_decoder(slen: int):
         def func(x, f):
             r, f = [], f + 1
             for _ in range(slen):
@@ -155,7 +155,7 @@ def make_fixed_length_list_decoders():
 make_fixed_length_list_decoders()
 
 
-def make_fixed_length_int_decoders():
+def make_fixed_length_int_decoders() -> None:
     def make_decoder(j):
         def func(_, f):
             return j, f + 1
@@ -171,8 +171,8 @@ def make_fixed_length_int_decoders():
 make_fixed_length_int_decoders()
 
 
-def make_fixed_length_dict_decoders():
-    def make_decoder(slen):
+def make_fixed_length_dict_decoders() -> None:
+    def make_decoder(slen: int):
         def func(x, f):
             r, f = {}, f + 1
             for _ in range(slen):

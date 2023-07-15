@@ -1,4 +1,5 @@
 import struct
+from typing import Any
 
 import pytest
 from rencode import dumps as dumps_orig, loads as loads_orig
@@ -35,12 +36,12 @@ f3 = struct.unpack("!f", struct.pack("!f", -0.6))[0]
         [1, 2, 3, True],
     ],
 )
-def test_dump_and_load(obj):
+def test_dump_and_load(obj: Any) -> None:
     original = dumps_orig(obj)
     assert dumps(obj) == original
     assert loads(original) == loads_orig(original)
 
 
-def test_dump_and_load_with_decode():
+def test_dump_and_load_with_decode() -> None:
     original = dumps_orig("Hello World!")
     assert loads(original, decode_utf8=True) == loads_orig(original, decode_utf8=True)

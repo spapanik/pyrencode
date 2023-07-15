@@ -11,7 +11,7 @@ f2 = struct.unpack("!f", struct.pack("!f", 29.3))[0]
 f3 = struct.unpack("!f", struct.pack("!f", -0.6))[0]
 
 
-def test_mixed_types_tuple():
+def test_mixed_types_tuple() -> None:
     obj = (
         (
             {b"a": 15, b"bb": f1, b"ccc": f2, b"": (f3, (), False, True, b"")},
@@ -40,7 +40,7 @@ def test_mixed_types_tuple():
     assert loads(dumps(obj)) == obj
 
 
-def test_tuple_of_updated_dict():
+def test_tuple_of_updated_dict() -> None:
     d: dict[Any, Any] = {i: i for i in range(-100000, 100000)}
     d.update(
         {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
@@ -55,7 +55,7 @@ def test_tuple_of_updated_dict():
     assert loads(dumps(obj)) == obj
 
 
-def test_tuple_of_bytes():
+def test_tuple_of_bytes() -> None:
     obj = (
         b"",
         b"a" * 10,
@@ -71,7 +71,7 @@ def test_tuple_of_bytes():
     assert loads(dumps(obj)) == obj
 
 
-def test_tuple_of_dicts():
+def test_tuple_of_dicts() -> None:
     obj = (
         tuple(dict(zip(range(n), range(n))) for n in range(100))
         + tuple(dict(zip(range(n), range(-n, 0))) for n in range(100))
@@ -80,35 +80,35 @@ def test_tuple_of_dicts():
     assert loads(dumps(obj)) == obj
 
 
-def test_tuple_of_tuples():
+def test_tuple_of_tuples() -> None:
     obj = (*tuple(tuple(range(n)) for n in range(100)), b"b")
     assert loads(dumps(obj)) == obj
 
 
-def test_tuple_of_bool():
+def test_tuple_of_bool() -> None:
     obj = (None, True, None, False)
     assert loads(dumps(obj)) == obj
 
 
-def test_none():
+def test_none() -> None:
     assert loads(dumps(None)) is None
 
 
-def test_none_dict():
+def test_none_dict() -> None:
     assert loads(dumps({None: None})) == {None: None}
 
 
-def test_float():
+def test_float() -> None:
     assert 1e-10 < abs(loads(dumps(1.1)) - 1.1) < 1e-6
 
 
-def test_float_32():
+def test_float_32() -> None:
     assert 1e-10 < abs(loads(dumps(1.1, 32)) - 1.1) < 1e-6
 
 
-def test_float_64():
+def test_float_64() -> None:
     assert abs(loads(dumps(1.1, 64)) - 1.1) < 1e-12
 
 
-def test_string():
+def test_string() -> None:
     assert loads(dumps("Hello World!!"), decode_utf8=True) == "Hello World!!"
