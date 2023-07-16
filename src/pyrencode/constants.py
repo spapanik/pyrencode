@@ -1,20 +1,20 @@
-from pyrencode.utils import int2byte
+from pyrencode.utils import to_bytes
 
 # The bencode 'typecodes' such as i, d, etc have been extended and
 # relocated on the base-256 character set.
-CHR_LIST = int2byte(59)
-CHR_DICT = int2byte(60)
-CHR_INT = int2byte(61)
-CHR_INT1 = int2byte(62)
-CHR_INT2 = int2byte(63)
-CHR_INT4 = int2byte(64)
-CHR_INT8 = int2byte(65)
-CHR_FLOAT32 = int2byte(66)
-CHR_FLOAT64 = int2byte(44)
-CHR_TRUE = int2byte(67)
-CHR_FALSE = int2byte(68)
-CHR_NONE = int2byte(69)
-CHR_TERM = int2byte(127)
+CHR_LIST = to_bytes(59)
+CHR_DICT = to_bytes(60)
+CHR_INT = to_bytes(61)
+CHR_INT1 = to_bytes(62)
+CHR_INT2 = to_bytes(63)
+CHR_INT4 = to_bytes(64)
+CHR_INT8 = to_bytes(65)
+CHR_FLOAT32 = to_bytes(66)
+CHR_FLOAT64 = to_bytes(44)
+CHR_TRUE = to_bytes(67)
+CHR_FALSE = to_bytes(68)
+CHR_NONE = to_bytes(69)
+CHR_TERM = to_bytes(127)
 
 # Integer breakpoints
 INT1_SIZE = 128

@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from typing import Any
 
 from pyrencode import constants
-from pyrencode.utils import int2byte
+from pyrencode.utils import to_bytes
 
 
 class Encoder:
@@ -45,9 +45,9 @@ class Encoder:
     @staticmethod
     def encode_int(obj: int) -> Iterator[bytes]:
         if 0 <= obj < constants.INT_POS_FIXED_COUNT:
-            yield int2byte(constants.INT_POS_FIXED_START + obj)
+            yield to_bytes(constants.INT_POS_FIXED_START + obj)
         elif -constants.INT_NEG_FIXED_COUNT <= obj < 0:
-            yield int2byte(constants.INT_NEG_FIXED_START - 1 - obj)
+            yield to_bytes(constants.INT_NEG_FIXED_START - 1 - obj)
         elif -constants.INT1_SIZE <= obj < constants.INT1_SIZE:
             yield constants.CHR_INT1
             yield struct.pack("!b", obj)
@@ -83,7 +83,7 @@ class Encoder:
     @staticmethod
     def encode_bytes(obj: bytes) -> Iterator[bytes]:
         if len(obj) < constants.STR_FIXED_COUNT:
-            yield int2byte(constants.STR_FIXED_START + len(obj))
+            yield to_bytes(constants.STR_FIXED_START + len(obj))
         else:
             yield bytes(str(len(obj)), constants.ASCII)
             yield b":"
@@ -94,7 +94,7 @@ class Encoder:
 
     def encode_list(self, obj: list[Any]) -> Iterator[bytes]:
         if len(obj) < constants.LIST_FIXED_COUNT:
-            yield int2byte(constants.LIST_FIXED_START + len(obj))
+            yield to_bytes(constants.LIST_FIXED_START + len(obj))
             for item in obj:
                 yield from self.encode_func(item)
         else:
@@ -105,7 +105,7 @@ class Encoder:
 
     def encode_dict(self, obj: dict[Any, Any]) -> Iterator[bytes]:
         if len(obj) < constants.DICT_FIXED_COUNT:
-            yield int2byte(constants.DICT_FIXED_START + len(obj))
+            yield to_bytes(constants.DICT_FIXED_START + len(obj))
             for key, value in obj.items():
                 yield from self.encode_func(key)
                 yield from self.encode_func(value)

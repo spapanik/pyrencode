@@ -1,2 +1,2 @@
-def int2byte(c: int) -> bytes:
-    return bytes([c])
+def to_bytes(c: int) -> bytes:  # py310
+    return c.to_bytes(length=1, byteorder="big")

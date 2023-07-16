@@ -4,7 +4,7 @@ import struct
 from typing import Any
 
 from pyrencode import constants
-from pyrencode.utils import int2byte
+from pyrencode.utils import to_bytes
 
 _decode_utf8 = constants.DECODE_UTF8
 
@@ -131,7 +131,7 @@ def make_fixed_length_string_decoders() -> None:
         return func
 
     for i in range(constants.STR_FIXED_COUNT):
-        decode_func[int2byte(constants.STR_FIXED_START + i)] = make_decoder(i)
+        decode_func[to_bytes(constants.STR_FIXED_START + i)] = make_decoder(i)
 
 
 make_fixed_length_string_decoders()
@@ -149,7 +149,7 @@ def make_fixed_length_list_decoders() -> None:
         return func
 
     for i in range(constants.LIST_FIXED_COUNT):
-        decode_func[int2byte(constants.LIST_FIXED_START + i)] = make_decoder(i)
+        decode_func[to_bytes(constants.LIST_FIXED_START + i)] = make_decoder(i)
 
 
 make_fixed_length_list_decoders()
@@ -163,9 +163,9 @@ def make_fixed_length_int_decoders() -> None:
         return func
 
     for i in range(constants.INT_POS_FIXED_COUNT):
-        decode_func[int2byte(constants.INT_POS_FIXED_START + i)] = make_decoder(i)
+        decode_func[to_bytes(constants.INT_POS_FIXED_START + i)] = make_decoder(i)
     for i in range(constants.INT_NEG_FIXED_COUNT):
-        decode_func[int2byte(constants.INT_NEG_FIXED_START + i)] = make_decoder(-1 - i)
+        decode_func[to_bytes(constants.INT_NEG_FIXED_START + i)] = make_decoder(-1 - i)
 
 
 make_fixed_length_int_decoders()
@@ -183,7 +183,7 @@ def make_fixed_length_dict_decoders() -> None:
         return func
 
     for i in range(constants.DICT_FIXED_COUNT):
-        decode_func[int2byte(constants.DICT_FIXED_START + i)] = make_decoder(i)
+        decode_func[to_bytes(constants.DICT_FIXED_START + i)] = make_decoder(i)
 
 
 make_fixed_length_dict_decoders()
