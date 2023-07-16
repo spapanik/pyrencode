@@ -22,33 +22,32 @@ INT2_SIZE = 2**15
 INT4_SIZE = 2**31
 INT8_SIZE = 2**63
 
-
 # Positive integers with value embedded in typecode.
 INT_POS_FIXED_START = 0
 INT_POS_FIXED_COUNT = 44
 
-# Dictionaries with length embedded in typecode.
-DICT_FIXED_START = 102
-DICT_FIXED_COUNT = 25
-
 # Negative integers with value embedded in typecode.
 INT_NEG_FIXED_START = 70
 INT_NEG_FIXED_COUNT = 32
+
+# Dictionaries with length embedded in typecode.
+DICT_FIXED_START = 102
+DICT_FIXED_COUNT = 25
 
 # Strings with length embedded in typecode.
 STR_FIXED_START = 128
 STR_FIXED_COUNT = 64
 
 # Lists with length embedded in typecode.
-LIST_FIXED_START = STR_FIXED_START + STR_FIXED_COUNT
+LIST_FIXED_START = 192
 LIST_FIXED_COUNT = 64
+
+# Maximum length of integer when written as base 10 string.
+MAX_INT_LENGTH = 64
 
 # Default number of bits for serialized floats,
 # either 32 or 64 (also a parameter for dumps()).
 DEFAULT_FLOAT_BITS = 32
-
-# Maximum length of integer when written as base 10 string.
-MAX_INT_LENGTH = 64
 
 # Whether strings should be decoded when loading
 DECODE_UTF8 = False
