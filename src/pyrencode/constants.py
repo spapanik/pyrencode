@@ -25,22 +25,27 @@ INT8_SIZE = 2**63
 # Positive integers with value embedded in typecode.
 INT_POS_FIXED_START = 0
 INT_POS_FIXED_COUNT = 44
+INT_POS_FIXED_END = 43
 
 # Negative integers with value embedded in typecode.
 INT_NEG_FIXED_START = 70
 INT_NEG_FIXED_COUNT = 32
+INT_NEG_FIXED_END = 101
 
 # Dictionaries with length embedded in typecode.
 DICT_FIXED_START = 102
 DICT_FIXED_COUNT = 25
+DICT_FIXED_END = 126
 
 # Strings with length embedded in typecode.
 STR_FIXED_START = 128
 STR_FIXED_COUNT = 64
+STR_FIXED_END = 191
 
 # Lists with length embedded in typecode.
 LIST_FIXED_START = 192
 LIST_FIXED_COUNT = 64
+LIST_FIXED_END = 255
 
 # Maximum length of integer when written as base 10 string.
 MAX_INT_LENGTH = 64

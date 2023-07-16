@@ -1,201 +1,195 @@
 from __future__ import annotations
 
 import struct
+from string import digits
 from typing import Any
 
 from pyrencode import constants
-from pyrencode.utils import to_bytes
 
-_decode_utf8 = constants.DECODE_UTF8
-
-
-def decode_int(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
-    cursor += 1
-    new_cursor = bytes_obj.index(constants.CHR_TERM, cursor)
-    if new_cursor - cursor >= constants.MAX_INT_LENGTH:
-        raise ValueError("overflow")
-    n = int(bytes_obj[cursor:new_cursor])
-    if bytes_obj[cursor : cursor + 1] == "-":
-        if bytes_obj[cursor + 1 : cursor + 2] == "0":
-            raise ValueError
-    elif bytes_obj[cursor : cursor + 1] == "0" and new_cursor != cursor + 1:
-        raise ValueError
-
-    return n, new_cursor + 1
+string_bytes = {digit.encode() for digit in digits}
 
 
-def decode_int1(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
-    cursor += 1
-    return struct.unpack("!b", bytes_obj[cursor : cursor + 1])[0], cursor + 1
+class Decoder:
+    def __init__(self, *, decode_utf8: bool = constants.DECODE_UTF8):
+        self.decode_utf8 = decode_utf8
 
+    def decode(self, bytes_obj: bytes) -> Any:
+        try:
+            obj, end_position = self._decode(bytes_obj)
+        except (IndexError, KeyError, OverflowError) as exc:
+            raise ValueError from exc
+        if end_position != len(bytes_obj):
+            raise ValueError(f"extra data: {bytes_obj[end_position:]!r}")
+        return obj
 
-def decode_int2(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
-    cursor += 1
-    return struct.unpack("!h", bytes_obj[cursor : cursor + 2])[0], cursor + 2
+    def _decode(self, bytes_obj: bytes, cursor: int = 0) -> tuple[Any, int]:
+        type_byte = bytes_obj[cursor : cursor + 1]
+        if type_byte == constants.CHR_NONE:
+            return None, cursor + 1
+        if type_byte == constants.CHR_TRUE:
+            return True, cursor + 1
+        if type_byte == constants.CHR_FALSE:
+            return False, cursor + 1
+        if type_byte == constants.CHR_INT:
+            return self.decode_int(bytes_obj, cursor)
+        if type_byte == constants.CHR_INT1:
+            return self.decode_int1(bytes_obj, cursor)
+        if type_byte == constants.CHR_INT2:
+            return self.decode_int2(bytes_obj, cursor)
+        if type_byte == constants.CHR_INT4:
+            return self.decode_int3(bytes_obj, cursor)
+        if type_byte == constants.CHR_INT8:
+            return self.decode_int4(bytes_obj, cursor)
+        if type_byte == constants.CHR_FLOAT32:
+            return self.decode_float32(bytes_obj, cursor)
+        if type_byte == constants.CHR_FLOAT64:
+            return self.decode_float64(bytes_obj, cursor)
+        if type_byte in string_bytes:
+            return self.decode_string(bytes_obj, cursor)
+        if type_byte == constants.CHR_LIST:
+            return self.decode_list(bytes_obj, cursor)
+        if type_byte == constants.CHR_DICT:
+            return self.decode_dict(bytes_obj, cursor)
 
+        order = ord(type_byte)
+        if constants.INT_POS_FIXED_START <= order <= constants.INT_POS_FIXED_END:
+            return self.decode_fixed_length_positive_integer(bytes_obj, cursor)
+        if constants.INT_NEG_FIXED_START <= order <= constants.INT_NEG_FIXED_END:
+            return self.decode_fixed_length_negative_integer(bytes_obj, cursor)
+        if constants.STR_FIXED_START <= order <= constants.STR_FIXED_END:
+            return self.decode_fixed_length_string(bytes_obj, cursor)
+        if constants.LIST_FIXED_START <= order <= constants.LIST_FIXED_END:
+            return self.decode_fixed_length_list(bytes_obj, cursor)
+        if constants.DICT_FIXED_START <= order <= constants.DICT_FIXED_END:
+            return self.decode_fixed_length_dict(bytes_obj, cursor)
 
-def decode_int3(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
-    cursor += 1
-    return struct.unpack("!l", bytes_obj[cursor : cursor + 4])[0], cursor + 4
+        raise ValueError(f"unknown type byte: {type_byte!r}")
 
+    def _decode_string(
+        self, bytes_obj: bytes, cursor: int, length: int
+    ) -> tuple[str | bytes, int]:
+        new_cursor = cursor + length
+        string = bytes_obj[cursor:new_cursor]
+        if self.decode_utf8:
+            return string.decode("utf8"), new_cursor
 
-def decode_int4(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
-    cursor += 1
-    return struct.unpack("!q", bytes_obj[cursor : cursor + 8])[0], cursor + 8
+        return string, new_cursor
 
+    @staticmethod
+    def decode_int(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
+        cursor += 1
+        new_cursor = bytes_obj.index(constants.CHR_TERM, cursor)
+        if new_cursor - cursor >= constants.MAX_INT_LENGTH:
+            raise OverflowError("int exceeds maximum length")
+        n = int(bytes_obj[cursor:new_cursor])
+        if bytes_obj[cursor : cursor + 1] == b"-":
+            if bytes_obj[cursor + 1 : cursor + 2] == b"0":
+                raise ValueError("negative zero in int")
+        elif bytes_obj[cursor : cursor + 1] == b"0" and new_cursor != cursor + 1:
+            raise ValueError("leading zero in int")
 
-def decode_float32(bytes_obj: bytes, cursor: int) -> tuple[float, int]:
-    cursor += 1
-    return struct.unpack("!f", bytes_obj[cursor : cursor + 4])[0], cursor + 4
+        return n, new_cursor + 1
 
+    @staticmethod
+    def decode_int1(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
+        cursor += 1
+        new_cursor = cursor + 1
+        return struct.unpack("!b", bytes_obj[cursor:new_cursor])[0], new_cursor
 
-def decode_float64(bytes_obj: bytes, cursor: int) -> tuple[float, int]:
-    cursor += 1
-    return struct.unpack("!d", bytes_obj[cursor : cursor + 8])[0], cursor + 8
+    @staticmethod
+    def decode_int2(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
+        cursor += 1
+        new_cursor = cursor + 2
+        return struct.unpack("!h", bytes_obj[cursor:new_cursor])[0], new_cursor
 
+    @staticmethod
+    def decode_int3(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
+        cursor += 1
+        new_cursor = cursor + 4
+        return struct.unpack("!l", bytes_obj[cursor:new_cursor])[0], new_cursor
 
-def decode_string(bytes_obj: bytes, cursor: int) -> tuple[str | bytes, int]:
-    colon = bytes_obj.index(b":", cursor)
-    n = int(bytes_obj[cursor:colon])
-    if bytes_obj[cursor] == "0" and colon != cursor + 1:
-        raise ValueError
-    colon += 1
-    string = bytes_obj[colon : colon + n]
-    if _decode_utf8:
-        return string.decode("utf8"), colon + n
-    return string, colon + n
+    @staticmethod
+    def decode_int4(bytes_obj: bytes, cursor: int) -> tuple[int, int]:
+        cursor += 1
+        new_cursor = cursor + 8
+        return struct.unpack("!q", bytes_obj[cursor:new_cursor])[0], new_cursor
 
+    @staticmethod
+    def decode_float32(bytes_obj: bytes, cursor: int) -> tuple[float, int]:
+        cursor += 1
+        new_cursor = cursor + 4
+        return struct.unpack("!f", bytes_obj[cursor:new_cursor])[0], new_cursor
 
-def decode_list(bytes_obj: bytes, cursor: int) -> tuple[tuple[Any, ...], int]:
-    r, cursor = [], cursor + 1
-    while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
-        v, cursor = decode_func[bytes_obj[cursor : cursor + 1]](bytes_obj, cursor)
-        r.append(v)
-    return tuple(r), cursor + 1
+    @staticmethod
+    def decode_float64(bytes_obj: bytes, cursor: int) -> tuple[float, int]:
+        cursor += 1
+        new_cursor = cursor + 8
+        return struct.unpack("!d", bytes_obj[cursor:new_cursor])[0], new_cursor
 
+    def decode_string(self, bytes_obj: bytes, cursor: int) -> tuple[str | bytes, int]:
+        colon = bytes_obj.index(b":", cursor)
+        if bytes_obj[cursor : cursor + 1] == b"0" and colon != cursor + 1:
+            raise ValueError("leading zero in string length")
 
-def decode_dict(x, cursor: int) -> tuple[dict[Any, Any], int]:
-    r, cursor = {}, cursor + 1
-    while x[cursor : cursor + 1] != constants.CHR_TERM:
-        k, cursor = decode_func[x[cursor : cursor + 1]](x, cursor)
-        r[k], cursor = decode_func[x[cursor : cursor + 1]](x, cursor)
-    return r, cursor + 1
+        length = int(bytes_obj[cursor:colon])
+        return self._decode_string(bytes_obj, colon + 1, length)
 
+    def decode_list(self, bytes_obj: bytes, cursor: int) -> tuple[tuple[Any, ...], int]:
+        output = []
+        cursor += 1
+        while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
+            value, cursor = self._decode(bytes_obj, cursor)
+            output.append(value)
+        return tuple(output), cursor + 1
 
-def decode_true(_, cursor: int) -> tuple[bool, int]:
-    return True, cursor + 1
+    def decode_dict(self, bytes_obj: bytes, cursor: int) -> tuple[dict[Any, Any], int]:
+        output = {}
+        cursor += 1
+        while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
+            key, cursor = self._decode(bytes_obj, cursor)
+            output[key], cursor = self._decode(bytes_obj, cursor)
+        return output, cursor + 1
 
+    @staticmethod
+    def decode_fixed_length_positive_integer(
+        bytes_obj: bytes, cursor: int
+    ) -> tuple[int, int]:
+        return bytes_obj[cursor], cursor + 1
 
-def decode_false(_, cursor: int) -> tuple[bool, int]:
-    return False, cursor + 1
+    @staticmethod
+    def decode_fixed_length_negative_integer(
+        bytes_obj: bytes, cursor: int
+    ) -> tuple[int, int]:
+        return constants.INT_NEG_FIXED_START - bytes_obj[cursor] - 1, cursor + 1
 
+    def decode_fixed_length_string(
+        self, bytes_obj: bytes, cursor: int
+    ) -> tuple[str | bytes, int]:
+        length = bytes_obj[cursor] - constants.STR_FIXED_START
+        return self._decode_string(bytes_obj, cursor + 1, length)
 
-def decode_none(_, cursor: int) -> tuple[None, int]:
-    return None, cursor + 1
+    def decode_fixed_length_list(
+        self, bytes_obj: bytes, cursor: int
+    ) -> tuple[tuple[Any, ...], int]:
+        length = bytes_obj[cursor] - constants.LIST_FIXED_START
+        output = []
+        cursor += 1
+        for _ in range(length):
+            value, cursor = self._decode(bytes_obj, cursor)
+            output.append(value)
+        return tuple(output), cursor
 
-
-decode_func = {
-    b"0": decode_string,
-    b"1": decode_string,
-    b"2": decode_string,
-    b"3": decode_string,
-    b"4": decode_string,
-    b"5": decode_string,
-    b"6": decode_string,
-    b"7": decode_string,
-    b"8": decode_string,
-    b"9": decode_string,
-    constants.CHR_LIST: decode_list,
-    constants.CHR_DICT: decode_dict,
-    constants.CHR_INT: decode_int,
-    constants.CHR_INT1: decode_int1,
-    constants.CHR_INT2: decode_int2,
-    constants.CHR_INT4: decode_int3,
-    constants.CHR_INT8: decode_int4,
-    constants.CHR_FLOAT32: decode_float32,
-    constants.CHR_FLOAT64: decode_float64,
-    constants.CHR_TRUE: decode_true,
-    constants.CHR_FALSE: decode_false,
-    constants.CHR_NONE: decode_none,
-}
-
-
-def make_fixed_length_string_decoders() -> None:
-    def make_decoder(slen: int):
-        def func(x, f):
-            s = x[f + 1 : f + 1 + slen]
-            if _decode_utf8:
-                s = s.decode("utf8")
-            return s, f + 1 + slen
-
-        return func
-
-    for i in range(constants.STR_FIXED_COUNT):
-        decode_func[to_bytes(constants.STR_FIXED_START + i)] = make_decoder(i)
-
-
-make_fixed_length_string_decoders()
-
-
-def make_fixed_length_list_decoders() -> None:
-    def make_decoder(slen: int):
-        def func(x, f):
-            r, f = [], f + 1
-            for _ in range(slen):
-                v, f = decode_func[x[f : f + 1]](x, f)
-                r.append(v)
-            return tuple(r), f
-
-        return func
-
-    for i in range(constants.LIST_FIXED_COUNT):
-        decode_func[to_bytes(constants.LIST_FIXED_START + i)] = make_decoder(i)
-
-
-make_fixed_length_list_decoders()
-
-
-def make_fixed_length_int_decoders() -> None:
-    def make_decoder(j):
-        def func(_, f):
-            return j, f + 1
-
-        return func
-
-    for i in range(constants.INT_POS_FIXED_COUNT):
-        decode_func[to_bytes(constants.INT_POS_FIXED_START + i)] = make_decoder(i)
-    for i in range(constants.INT_NEG_FIXED_COUNT):
-        decode_func[to_bytes(constants.INT_NEG_FIXED_START + i)] = make_decoder(-1 - i)
-
-
-make_fixed_length_int_decoders()
-
-
-def make_fixed_length_dict_decoders() -> None:
-    def make_decoder(slen: int):
-        def func(x, f):
-            r, f = {}, f + 1
-            for _ in range(slen):
-                k, f = decode_func[x[f : f + 1]](x, f)
-                r[k], f = decode_func[x[f : f + 1]](x, f)
-            return r, f
-
-        return func
-
-    for i in range(constants.DICT_FIXED_COUNT):
-        decode_func[to_bytes(constants.DICT_FIXED_START + i)] = make_decoder(i)
-
-
-make_fixed_length_dict_decoders()
+    def decode_fixed_length_dict(
+        self, bytes_obj: bytes, cursor: int
+    ) -> tuple[dict[Any, Any], int]:
+        length = bytes_obj[cursor] - constants.DICT_FIXED_START
+        output = {}
+        cursor += 1
+        for _ in range(length):
+            key, cursor = self._decode(bytes_obj, cursor)
+            output[key], cursor = self._decode(bytes_obj, cursor)
+        return output, cursor
 
 
 def loads(bytes_obj: bytes, *, decode_utf8: bool = False) -> Any:
-    global _decode_utf8  # noqa: PLW0603
-    _decode_utf8 = decode_utf8
-    try:
-        obj, end_position = decode_func[bytes_obj[:1]](bytes_obj, 0)
-    except (IndexError, KeyError) as exc:
-        raise ValueError from exc
-    if end_position != len(bytes_obj):
-        raise ValueError
-    return obj
+    return Decoder(decode_utf8=decode_utf8).decode(bytes_obj)
