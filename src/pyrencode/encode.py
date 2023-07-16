@@ -85,12 +85,12 @@ class Encoder:
         if len(obj) < constants.STR_FIXED_COUNT:
             yield to_bytes(constants.STR_FIXED_START + len(obj))
         else:
-            yield bytes(str(len(obj)), constants.ASCII)
+            yield str(len(obj)).encode()
             yield b":"
         yield obj
 
     def encode_string(self, obj: str) -> Iterator[bytes]:
-        yield from self.encode_bytes(obj.encode(constants.UTF8))
+        yield from self.encode_bytes(obj.encode())
 
     def encode_list(self, obj: list[Any]) -> Iterator[bytes]:
         if len(obj) < constants.LIST_FIXED_COUNT:

@@ -52,6 +52,3 @@ MAX_INT_LENGTH = 64
 
 # Whether strings should be decoded when loading
 DECODE_UTF8 = False
-
-ASCII = "ascii"
-UTF8 = "utf8"
