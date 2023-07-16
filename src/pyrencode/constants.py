@@ -17,10 +17,10 @@ CHR_NONE = to_bytes(69)
 CHR_TERM = to_bytes(127)
 
 # Integer breakpoints
-INT1_SIZE = 128
-INT2_SIZE = 32768
-INT4_SIZE = 2147483648
-INT8_SIZE = 9223372036854775808
+INT1_SIZE = 2**7
+INT2_SIZE = 2**15
+INT4_SIZE = 2**31
+INT8_SIZE = 2**63
 
 
 # Positive integers with value embedded in typecode.
