@@ -1,111 +1,121 @@
 from __future__ import annotations
 
 import struct
-from typing import Any, Callable
+from collections.abc import Iterator
+from typing import Any
 
 from pyrencode import constants
 from pyrencode.utils import int2byte
 
 
-def encode_int(obj: int, data_list: list[bytes]) -> None:
-    if 0 <= obj < constants.INT_POS_FIXED_COUNT:
-        data_list.append(int2byte(constants.INT_POS_FIXED_START + obj))
-    elif -constants.INT_NEG_FIXED_COUNT <= obj < 0:
-        data_list.append(int2byte(constants.INT_NEG_FIXED_START - 1 - obj))
-    elif -constants.INT1_SIZE <= obj < constants.INT1_SIZE:
-        data_list.extend((constants.CHR_INT1, struct.pack("!b", obj)))
-    elif -constants.INT2_SIZE <= obj < constants.INT2_SIZE:
-        data_list.extend((constants.CHR_INT2, struct.pack("!h", obj)))
-    elif -constants.INT4_SIZE <= obj < constants.INT4_SIZE:
-        data_list.extend((constants.CHR_INT4, struct.pack("!l", obj)))
-    elif -constants.INT8_SIZE <= obj < constants.INT8_SIZE:
-        data_list.extend((constants.CHR_INT8, struct.pack("!q", obj)))
-    else:
-        s = bytes(str(obj), "ascii")
-        if len(s) >= constants.MAX_INT_LENGTH:
-            raise OverflowError("Integer is too long to be rencoded.")
+class Encoder:
+    def __init__(self, float_bits: int = constants.DEFAULT_FLOAT_BITS):
+        if float_bits not in {32, 64}:
+            raise ValueError(f"Float bits {float_bits} is not 32 or 64")
+        self.float_bits = float_bits
 
-        data_list.extend((constants.CHR_INT, s, constants.CHR_TERM))
+    def encode(self, obj: Any) -> bytes:
+        return b"".join(self.encode_func(obj))
 
+    def encode_func(self, obj: Any) -> Iterator[bytes]:
+        if obj is None:
+            yield constants.CHR_NONE
+        elif obj is True:
+            yield constants.CHR_TRUE
+        elif obj is False:
+            yield constants.CHR_FALSE
+        elif isinstance(obj, int):
+            yield from self.encode_int(obj)
+        elif isinstance(obj, float):
+            if self.float_bits == 32:
+                yield from self.encode_float32(obj)
+            else:
+                yield from self.encode_float64(obj)
+        elif isinstance(obj, bytes):
+            yield from self.encode_bytes(obj)
+        elif isinstance(obj, (list, tuple)):
+            yield from self.encode_list(obj)
+        elif isinstance(obj, dict):
+            yield from self.encode_dict(obj)
+        elif isinstance(obj, str):
+            yield from self.encode_string(obj)
+        else:
+            raise TypeError(f"Object {obj} cannot be rencoded.")
 
-def encode_float32(obj: float, data_list: list[bytes]) -> None:
-    data_list.extend((constants.CHR_FLOAT32, struct.pack("!f", obj)))
+    @staticmethod
+    def encode_int(obj: int) -> Iterator[bytes]:
+        if 0 <= obj < constants.INT_POS_FIXED_COUNT:
+            yield int2byte(constants.INT_POS_FIXED_START + obj)
+        elif -constants.INT_NEG_FIXED_COUNT <= obj < 0:
+            yield int2byte(constants.INT_NEG_FIXED_START - 1 - obj)
+        elif -constants.INT1_SIZE <= obj < constants.INT1_SIZE:
+            yield constants.CHR_INT1
+            yield struct.pack("!b", obj)
+        elif -constants.INT2_SIZE <= obj < constants.INT2_SIZE:
+            yield constants.CHR_INT2
+            yield struct.pack("!h", obj)
+        elif -constants.INT4_SIZE <= obj < constants.INT4_SIZE:
+            yield constants.CHR_INT4
+            yield struct.pack("!l", obj)
+        elif -constants.INT8_SIZE <= obj < constants.INT8_SIZE:
+            yield constants.CHR_INT8
+            yield struct.pack("!q", obj)
+        else:
+            yield constants.CHR_INT
 
+            int_as_bytes = bytes(str(obj), "ascii")
+            yield int_as_bytes
+            if len(int_as_bytes) >= constants.MAX_INT_LENGTH:
+                raise OverflowError(f"Integer {obj} is too big to be rencoded.")
 
-def encode_float64(obj: float, data_list: list[bytes]) -> None:
-    data_list.extend((constants.CHR_FLOAT64, struct.pack("!d", obj)))
+            yield constants.CHR_TERM
 
+    @staticmethod
+    def encode_float32(obj: float) -> Iterator[bytes]:
+        yield constants.CHR_FLOAT32
+        yield struct.pack("!f", obj)
 
-def encode_bool(obj: bool, data_list: list[bytes]) -> None:  # noqa: FBT001
-    if obj:
-        data_list.append(constants.CHR_TRUE)
-    else:
-        data_list.append(constants.CHR_FALSE)
+    @staticmethod
+    def encode_float64(obj: float) -> Iterator[bytes]:
+        yield constants.CHR_FLOAT64
+        yield struct.pack("!d", obj)
 
+    @staticmethod
+    def encode_bytes(obj: bytes) -> Iterator[bytes]:
+        if len(obj) < constants.STR_FIXED_COUNT:
+            yield int2byte(constants.STR_FIXED_START + len(obj))
+        else:
+            yield bytes(str(len(obj)), constants.ASCII)
+            yield b":"
+        yield obj
 
-def encode_none(_obj: None, data_list: list[bytes]) -> None:
-    data_list.append(constants.CHR_NONE)
+    def encode_string(self, obj: str) -> Iterator[bytes]:
+        yield from self.encode_bytes(obj.encode(constants.UTF8))
 
+    def encode_list(self, obj: list[Any]) -> Iterator[bytes]:
+        if len(obj) < constants.LIST_FIXED_COUNT:
+            yield int2byte(constants.LIST_FIXED_START + len(obj))
+            for item in obj:
+                yield from self.encode_func(item)
+        else:
+            yield constants.CHR_LIST
+            for item in obj:
+                yield from self.encode_func(item)
+            yield constants.CHR_TERM
 
-def encode_bytes(obj: bytes, data_list: list[bytes]) -> None:
-    if len(obj) < constants.STR_FIXED_COUNT:
-        data_list.extend((int2byte(constants.STR_FIXED_START + len(obj)), obj))
-    else:
-        string = bytes(str(len(obj)), constants.ASCII)
-        data_list.extend((string, b":", obj))
-
-
-def encode_string(obj: str, data_list: list[bytes]) -> None:
-    encode_bytes(obj.encode(constants.UTF8), data_list)
-
-
-def encode_list(obj: list[Any], data_list: list[bytes]) -> None:
-    if len(obj) < constants.LIST_FIXED_COUNT:
-        data_list.append(int2byte(constants.LIST_FIXED_START + len(obj)))
-        for item in obj:
-            encode_func[type(item)](item, data_list)
-    else:
-        data_list.append(constants.CHR_LIST)
-        for item in obj:
-            encode_func[type(item)](item, data_list)
-        data_list.append(constants.CHR_TERM)
-
-
-def encode_dict(obj: dict[Any, Any], data_list: list[bytes]) -> None:
-    if len(obj) < constants.DICT_FIXED_COUNT:
-        data_list.append(int2byte(constants.DICT_FIXED_START + len(obj)))
-        for key, value in obj.items():
-            encode_func[type(key)](key, data_list)
-            encode_func[type(value)](value, data_list)
-    else:
-        data_list.append(constants.CHR_DICT)
-        for key, value in obj.items():
-            encode_func[type(key)](key, data_list)
-            encode_func[type(value)](value, data_list)
-        data_list.append(constants.CHR_TERM)
-
-
-encode_func: dict[type, Callable[[Any, list[bytes]], None]] = {
-    int: encode_int,
-    bytes: encode_bytes,
-    list: encode_list,
-    tuple: encode_list,
-    dict: encode_dict,
-    type(None): encode_none,
-    str: encode_string,
-    bool: encode_bool,
-}
+    def encode_dict(self, obj: dict[Any, Any]) -> Iterator[bytes]:
+        if len(obj) < constants.DICT_FIXED_COUNT:
+            yield int2byte(constants.DICT_FIXED_START + len(obj))
+            for key, value in obj.items():
+                yield from self.encode_func(key)
+                yield from self.encode_func(value)
+        else:
+            yield constants.CHR_DICT
+            for key, value in obj.items():
+                yield from self.encode_func(key)
+                yield from self.encode_func(value)
+            yield constants.CHR_TERM
 
 
 def dumps(obj: Any, float_bits: int = constants.DEFAULT_FLOAT_BITS) -> bytes:
-    if float_bits == 32:
-        encode_func[float] = encode_float32
-    elif float_bits == 64:
-        encode_func[float] = encode_float64
-    else:
-        raise ValueError(f"Float bits {float_bits} is not 32 or 64")
-
-    data_list: list[bytes] = []
-    encode_func[type(obj)](obj, data_list)
-
-    return b"".join(data_list)
+    return Encoder(float_bits).encode(obj)
