@@ -3,6 +3,8 @@ from __future__ import annotations
 import struct
 from typing import Any
 
+import pytest
+
 from pyrencode.decode import loads
 from pyrencode.encode import dumps
 
@@ -99,15 +101,15 @@ def test_none_dict() -> None:
 
 
 def test_float() -> None:
-    assert 1e-10 < abs(loads(dumps(1.1)) - 1.1) < 1e-6
+    assert loads(dumps(1.1)) == pytest.approx(1.1)
 
 
 def test_float_32() -> None:
-    assert 1e-10 < abs(loads(dumps(1.1, 32)) - 1.1) < 1e-6
+    assert loads(dumps(1.1, 32)) == pytest.approx(1.1)
 
 
 def test_float_64() -> None:
-    assert abs(loads(dumps(1.1, 64)) - 1.1) < 1e-12
+    assert loads(dumps(1.1, 64)) == pytest.approx(1.1)
 
 
 def test_string() -> None:
