@@ -9,15 +9,16 @@ from pyrencode.utils import to_bytes
 
 
 class Encoder:
-    def __init__(self, float_bits: int = constants.DEFAULT_FLOAT_BITS):
+    __slots__ = ()
+
+    @classmethod
+    def encode(cls, obj: Any, *, float_bits=constants.DEFAULT_FLOAT_BITS) -> bytes:
         if float_bits not in {32, 64}:
             raise ValueError(f"Float bits {float_bits} is not 32 or 64")
-        self.float_bits = float_bits
+        return b"".join(cls._encode(obj, float_bits))
 
-    def encode(self, obj: Any) -> bytes:
-        return b"".join(self._encode(obj))
-
-    def _encode(self, obj: Any) -> Iterator[bytes]:
+    @classmethod
+    def _encode(cls, obj: Any, float_bits: int) -> Iterator[bytes]:
         if obj is None:
             yield constants.CHR_NONE
         elif obj is True:
@@ -25,20 +26,20 @@ class Encoder:
         elif obj is False:
             yield constants.CHR_FALSE
         elif isinstance(obj, int):
-            yield from self.encode_int(obj)
+            yield from cls.encode_int(obj)
         elif isinstance(obj, float):
-            if self.float_bits == 32:
-                yield from self.encode_float32(obj)
+            if float_bits == 32:
+                yield from cls.encode_float32(obj)
             else:
-                yield from self.encode_float64(obj)
+                yield from cls.encode_float64(obj)
         elif isinstance(obj, bytes):
-            yield from self.encode_bytes(obj)
+            yield from cls.encode_bytes(obj)
         elif isinstance(obj, (list, tuple)):
-            yield from self.encode_list(obj)
+            yield from cls.encode_list(obj, float_bits)
         elif isinstance(obj, dict):
-            yield from self.encode_dict(obj)
+            yield from cls.encode_dict(obj, float_bits)
         elif isinstance(obj, str):
-            yield from self.encode_string(obj)
+            yield from cls.encode_string(obj)
         else:
             raise TypeError(f"Object {obj} cannot be rencoded.")
 
@@ -89,33 +90,36 @@ class Encoder:
             yield b":"
         yield obj
 
-    def encode_string(self, obj: str) -> Iterator[bytes]:
-        yield from self.encode_bytes(obj.encode())
+    @classmethod
+    def encode_string(cls, obj: str) -> Iterator[bytes]:
+        yield from cls.encode_bytes(obj.encode())
 
-    def encode_list(self, obj: Sequence[Any]) -> Iterator[bytes]:
+    @classmethod
+    def encode_list(cls, obj: Sequence[Any], float_bits: int) -> Iterator[bytes]:
         if len(obj) < constants.LIST_FIXED_COUNT:
             yield to_bytes(constants.LIST_FIXED_START + len(obj))
             for item in obj:
-                yield from self._encode(item)
+                yield from cls._encode(item, float_bits)
         else:
             yield constants.CHR_LIST
             for item in obj:
-                yield from self._encode(item)
+                yield from cls._encode(item, float_bits)
             yield constants.CHR_TERM
 
-    def encode_dict(self, obj: dict[Any, Any]) -> Iterator[bytes]:
+    @classmethod
+    def encode_dict(cls, obj: dict[Any, Any], float_bits: int) -> Iterator[bytes]:
         if len(obj) < constants.DICT_FIXED_COUNT:
             yield to_bytes(constants.DICT_FIXED_START + len(obj))
             for key, value in obj.items():
-                yield from self._encode(key)
-                yield from self._encode(value)
+                yield from cls._encode(key, float_bits)
+                yield from cls._encode(value, float_bits)
         else:
             yield constants.CHR_DICT
             for key, value in obj.items():
-                yield from self._encode(key)
-                yield from self._encode(value)
+                yield from cls._encode(key, float_bits)
+                yield from cls._encode(value, float_bits)
             yield constants.CHR_TERM
 
 
 def dumps(obj: Any, float_bits: int = constants.DEFAULT_FLOAT_BITS) -> bytes:
-    return Encoder(float_bits).encode(obj)
+    return Encoder.encode(obj, float_bits=float_bits)
