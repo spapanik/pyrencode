@@ -25,6 +25,8 @@ pyrencode: rencode in pure python
   :target: https://github.com/charliermarsh/ruff
 
 ``pyrencode`` is a python rewrite of the original `rencode`_ by aresch, avoiding  the cython dependency, so that it can be used with PyPy.
+Even though there in no cython code, the performance is comparable to the original, and in many cases it's even better.
+
 
 In a nutshell
 -------------

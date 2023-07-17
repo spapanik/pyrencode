@@ -9,6 +9,10 @@ The format is based on `Keep a Changelog`_, and this project adheres to `Semanti
 `Unreleased`_
 -------------
 
+Changed
+^^^^^^^
+* Changed implementation to use an Encoder and a Decoder class
+
 Added
 ^^^^^
 * Added type hints
