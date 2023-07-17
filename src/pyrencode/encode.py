@@ -15,9 +15,9 @@ class Encoder:
         self.float_bits = float_bits
 
     def encode(self, obj: Any) -> bytes:
-        return b"".join(self.encode_func(obj))
+        return b"".join(self._encode(obj))
 
-    def encode_func(self, obj: Any) -> Iterator[bytes]:
+    def _encode(self, obj: Any) -> Iterator[bytes]:
         if obj is None:
             yield constants.CHR_NONE
         elif obj is True:
@@ -96,24 +96,24 @@ class Encoder:
         if len(obj) < constants.LIST_FIXED_COUNT:
             yield to_bytes(constants.LIST_FIXED_START + len(obj))
             for item in obj:
-                yield from self.encode_func(item)
+                yield from self._encode(item)
         else:
             yield constants.CHR_LIST
             for item in obj:
-                yield from self.encode_func(item)
+                yield from self._encode(item)
             yield constants.CHR_TERM
 
     def encode_dict(self, obj: dict[Any, Any]) -> Iterator[bytes]:
         if len(obj) < constants.DICT_FIXED_COUNT:
             yield to_bytes(constants.DICT_FIXED_START + len(obj))
             for key, value in obj.items():
-                yield from self.encode_func(key)
-                yield from self.encode_func(value)
+                yield from self._encode(key)
+                yield from self._encode(value)
         else:
             yield constants.CHR_DICT
             for key, value in obj.items():
-                yield from self.encode_func(key)
-                yield from self.encode_func(value)
+                yield from self._encode(key)
+                yield from self._encode(value)
             yield constants.CHR_TERM
 
 
