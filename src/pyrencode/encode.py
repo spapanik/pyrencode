@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import struct
-from collections.abc import Iterator
+from collections.abc import Iterator, Sequence
 from typing import Any
 
 from pyrencode import constants
@@ -92,7 +92,7 @@ class Encoder:
     def encode_string(self, obj: str) -> Iterator[bytes]:
         yield from self.encode_bytes(obj.encode())
 
-    def encode_list(self, obj: list[Any]) -> Iterator[bytes]:
+    def encode_list(self, obj: Sequence[Any]) -> Iterator[bytes]:
         if len(obj) < constants.LIST_FIXED_COUNT:
             yield to_bytes(constants.LIST_FIXED_START + len(obj))
             for item in obj:
