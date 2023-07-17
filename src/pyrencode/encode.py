@@ -12,7 +12,9 @@ class Encoder:
     __slots__ = ()
 
     @classmethod
-    def encode(cls, obj: Any, *, float_bits=constants.DEFAULT_FLOAT_BITS) -> bytes:
+    def encode(
+        cls, obj: Any, *, float_bits: int = constants.DEFAULT_FLOAT_BITS
+    ) -> bytes:
         if float_bits not in {32, 64}:
             raise ValueError(f"Float bits {float_bits} is not 32 or 64")
         return b"".join(cls._encode(obj, float_bits))

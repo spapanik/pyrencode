@@ -5,15 +5,18 @@ from string import digits
 from typing import Any
 
 from pyrencode import constants
+from pyrencode.utils import Singleton
 
 string_bytes = {digit.encode() for digit in digits}
 
 
-class Decoder:
+class Decoder(metaclass=Singleton):
     __slots__ = ()
 
     @classmethod
-    def decode(cls, bytes_obj: bytes, *, decode_utf8: bool = constants.DECODE_UTF8) -> Any:
+    def decode(
+        cls, bytes_obj: bytes, *, decode_utf8: bool = constants.DECODE_UTF8
+    ) -> Any:
         try:
             obj, end_position = cls._decode(bytes_obj, decode_utf8=decode_utf8)
         except (IndexError, KeyError, OverflowError) as exc:
@@ -23,7 +26,9 @@ class Decoder:
         return obj
 
     @classmethod
-    def _decode(cls, bytes_obj: bytes, cursor: int = 0, *, decode_utf8: bool) -> tuple[Any, int]:
+    def _decode(
+        cls, bytes_obj: bytes, cursor: int = 0, *, decode_utf8: bool
+    ) -> tuple[Any, int]:
         type_byte = bytes_obj[cursor : cursor + 1]
         if type_byte == constants.CHR_NONE:
             return None, cursor + 1
@@ -58,11 +63,17 @@ class Decoder:
         if constants.INT_NEG_FIXED_START <= order <= constants.INT_NEG_FIXED_END:
             return cls.decode_fixed_length_negative_integer(bytes_obj, cursor)
         if constants.STR_FIXED_START <= order <= constants.STR_FIXED_END:
-            return cls.decode_fixed_length_string(bytes_obj, cursor, decode_utf8=decode_utf8)
+            return cls.decode_fixed_length_string(
+                bytes_obj, cursor, decode_utf8=decode_utf8
+            )
         if constants.LIST_FIXED_START <= order <= constants.LIST_FIXED_END:
-            return cls.decode_fixed_length_list(bytes_obj, cursor, decode_utf8=decode_utf8)
+            return cls.decode_fixed_length_list(
+                bytes_obj, cursor, decode_utf8=decode_utf8
+            )
         if constants.DICT_FIXED_START <= order <= constants.DICT_FIXED_END:
-            return cls.decode_fixed_length_dict(bytes_obj, cursor, decode_utf8=decode_utf8)
+            return cls.decode_fixed_length_dict(
+                bytes_obj, cursor, decode_utf8=decode_utf8
+            )
 
         raise ValueError(f"unknown type byte: {type_byte!r}")
 
@@ -129,7 +140,9 @@ class Decoder:
         return struct.unpack("!d", bytes_obj[cursor:new_cursor])[0], new_cursor
 
     @classmethod
-    def decode_string(cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool) -> tuple[str | bytes, int]:
+    def decode_string(
+        cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool
+    ) -> tuple[str | bytes, int]:
         colon = bytes_obj.index(b":", cursor)
         if bytes_obj[cursor : cursor + 1] == b"0" and colon != cursor + 1:
             raise ValueError("leading zero in string length")
@@ -138,7 +151,9 @@ class Decoder:
         return cls._decode_string(bytes_obj, colon + 1, length, decode_utf8=decode_utf8)
 
     @classmethod
-    def decode_list(cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool) -> tuple[tuple[Any, ...], int]:
+    def decode_list(
+        cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool
+    ) -> tuple[tuple[Any, ...], int]:
         output = []
         cursor += 1
         while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
@@ -147,12 +162,16 @@ class Decoder:
         return tuple(output), cursor + 1
 
     @classmethod
-    def decode_dict(cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool) -> tuple[dict[Any, Any], int]:
+    def decode_dict(
+        cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool
+    ) -> tuple[dict[Any, Any], int]:
         output = {}
         cursor += 1
         while bytes_obj[cursor : cursor + 1] != constants.CHR_TERM:
             key, cursor = cls._decode(bytes_obj, cursor, decode_utf8=decode_utf8)
-            output[key], cursor = cls._decode(bytes_obj, cursor, decode_utf8=decode_utf8)
+            output[key], cursor = cls._decode(
+                bytes_obj, cursor, decode_utf8=decode_utf8
+            )
         return output, cursor + 1
 
     @staticmethod
@@ -172,7 +191,9 @@ class Decoder:
         cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool
     ) -> tuple[str | bytes, int]:
         length = bytes_obj[cursor] - constants.STR_FIXED_START
-        return cls._decode_string(bytes_obj, cursor + 1, length, decode_utf8=decode_utf8)
+        return cls._decode_string(
+            bytes_obj, cursor + 1, length, decode_utf8=decode_utf8
+        )
 
     @classmethod
     def decode_fixed_length_list(
@@ -195,7 +216,9 @@ class Decoder:
         cursor += 1
         for _ in range(length):
             key, cursor = cls._decode(bytes_obj, cursor, decode_utf8=decode_utf8)
-            output[key], cursor = cls._decode(bytes_obj, cursor, decode_utf8=decode_utf8)
+            output[key], cursor = cls._decode(
+                bytes_obj, cursor, decode_utf8=decode_utf8
+            )
         return output, cursor
 
 
