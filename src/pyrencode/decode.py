@@ -22,7 +22,8 @@ class Decoder(metaclass=Singleton):
         except (IndexError, KeyError, OverflowError) as exc:
             raise ValueError from exc
         if end_position != len(bytes_obj):
-            raise ValueError(f"extra data: {bytes_obj[end_position:]!r}")
+            msg = f"extra data: {bytes_obj[end_position:]!r}"
+            raise ValueError(msg)
         return obj
 
     @classmethod
@@ -75,7 +76,8 @@ class Decoder(metaclass=Singleton):
                 bytes_obj, cursor, decode_utf8=decode_utf8
             )
 
-        raise ValueError(f"unknown type byte: {type_byte!r}")
+        msg = f"unknown type byte: {type_byte!r}"
+        raise ValueError(msg)
 
     @staticmethod
     def _decode_string(
@@ -93,13 +95,16 @@ class Decoder(metaclass=Singleton):
         cursor += 1
         new_cursor = bytes_obj.index(constants.CHR_TERM, cursor)
         if new_cursor - cursor >= constants.MAX_INT_LENGTH:
-            raise OverflowError("int exceeds maximum length")
+            msg = "int exceeds maximum length"
+            raise OverflowError(msg)
         n = int(bytes_obj[cursor:new_cursor])
         if bytes_obj[cursor : cursor + 1] == b"-":
             if bytes_obj[cursor + 1 : cursor + 2] == b"0":
-                raise ValueError("negative zero in int")
+                msg = "negative zero in int"
+                raise ValueError(msg)
         elif bytes_obj[cursor : cursor + 1] == b"0" and new_cursor != cursor + 1:
-            raise ValueError("leading zero in int")
+            msg = "leading zero in int"
+            raise ValueError(msg)
 
         return n, new_cursor + 1
 
@@ -145,7 +150,8 @@ class Decoder(metaclass=Singleton):
     ) -> tuple[str | bytes, int]:
         colon = bytes_obj.index(b":", cursor)
         if bytes_obj[cursor : cursor + 1] == b"0" and colon != cursor + 1:
-            raise ValueError("leading zero in string length")
+            msg = "leading zero in string length"
+            raise ValueError(msg)
 
         length = int(bytes_obj[cursor:colon])
         return cls._decode_string(bytes_obj, colon + 1, length, decode_utf8=decode_utf8)

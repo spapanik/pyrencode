@@ -16,7 +16,8 @@ class Encoder:
         cls, obj: Any, *, float_bits: int = constants.DEFAULT_FLOAT_BITS
     ) -> bytes:
         if float_bits not in {32, 64}:
-            raise ValueError(f"Float bits {float_bits} is not 32 or 64")
+            msg = f"Float bits {float_bits} is not 32 or 64"
+            raise ValueError(msg)
         return b"".join(cls._encode(obj, float_bits))
 
     @classmethod
@@ -43,7 +44,8 @@ class Encoder:
         elif isinstance(obj, str):
             yield from cls.encode_string(obj)
         else:
-            raise TypeError(f"Object {obj} cannot be rencoded.")
+            msg = f"Object {obj} cannot be rencoded."
+            raise TypeError(msg)
 
     @staticmethod
     def encode_int(obj: int) -> Iterator[bytes]:
@@ -69,7 +71,8 @@ class Encoder:
             int_as_bytes = bytes(str(obj), "ascii")
             yield int_as_bytes
             if len(int_as_bytes) >= constants.MAX_INT_LENGTH:
-                raise OverflowError(f"Integer {obj} is too big to be rencoded.")
+                msg = f"Integer {obj} is too big to be rencoded."
+                raise OverflowError(msg)
 
             yield constants.CHR_TERM
 
