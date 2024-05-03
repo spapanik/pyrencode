@@ -1,0 +1,37 @@
+# pyrencode: rencode in pure python
+
+[![tests][test_badge]][test_url]
+[![license][licence_badge]][licence_url]
+[![pypi][pypi_badge]][pypi_url]
+[![downloads][pepy_badge]][pepy_url]
+[![code style: black][black_badge]][black_url]
+[![build automation: yam][yam_badge]][yam_url]
+[![Lint: ruff][ruff_badge]][ruff_url]
+
+`pyrencode` is a python rewrite of the original
+[rencode](https://github.com/aresch/rencode) by aresch, avoiding the
+cython dependency, so that it can be used with PyPy. Even though there
+in no cython code, the performance is comparable to the original, and in
+many cases it\'s even better.
+
+## Links
+
+-   [Documentation]
+-   [Changelog]
+
+[test_badge]: https://github.com/spapanik/pyrencode/actions/workflows/tests.yml/badge.svg
+[test_url]: https://github.com/spapanik/pyrencode/actions/workflows/tests.yml
+[licence_badge]: https://img.shields.io/badge/License-LGPL_v3-blue.svg
+[licence_url]: https://github.com/spapanik/pyrencode/blob/main/docs/LICENSE.md
+[pypi_badge]: https://img.shields.io/pypi/v/pyrencode
+[pypi_url]: https://pypi.org/project/pyrencode
+[pepy_badge]: https://pepy.tech/badge/pyrencode
+[pepy_url]: https://pepy.tech/project/pyrencode
+[black_badge]: https://img.shields.io/badge/code%20style-black-000000.svg
+[black_url]: https://github.com/psf/black
+[yam_badge]: https://img.shields.io/badge/build%20automation-yamk-success
+[yam_url]: https://github.com/spapanik/yamk
+[ruff_badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json
+[ruff_url]: https://github.com/charliermarsh/ruff
+[Documentation]: https://pyrencode.readthedocs.io/en/stable/
+[Changelog]: https://github.com/spapanik/pyrencode/blob/main/docs/CHANGELOG.md
