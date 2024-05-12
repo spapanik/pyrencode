@@ -4,8 +4,9 @@ import struct
 from string import digits
 from typing import Any
 
+from pyutilkit.classes import Singleton
+
 from pyrencode import constants
-from pyrencode.utils import Singleton
 
 string_bytes = {digit.encode() for digit in digits}
 
