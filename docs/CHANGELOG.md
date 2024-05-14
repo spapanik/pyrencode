@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog], and this project adheres to [Semantic
 
 ## [Unreleased]
 
+### Removed
+
+-   Dropped python38 support
+
 ### Changed
 
 -   Changed implementation to use an Encoder and a Decoder class
