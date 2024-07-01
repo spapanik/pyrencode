@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import struct
-from collections.abc import Iterator, Sequence
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pyrencode import constants
 from pyrencode.utils import to_bytes
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Sequence
 
 
 class Encoder:
