@@ -21,7 +21,7 @@ many cases it\'s even better.
 
 [test_badge]: https://github.com/spapanik/pyrencode/actions/workflows/tests.yml/badge.svg
 [test_url]: https://github.com/spapanik/pyrencode/actions/workflows/tests.yml
-[licence_badge]: https://img.shields.io/badge/License-LGPL_v3-blue.svg
+[licence_badge]: https://img.shields.io/pypi/l/pyrencode
 [licence_url]: https://github.com/spapanik/pyrencode/blob/main/docs/LICENSE.md
 [pypi_badge]: https://img.shields.io/pypi/v/pyrencode
 [pypi_url]: https://pypi.org/project/pyrencode

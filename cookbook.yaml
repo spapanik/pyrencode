@@ -1,8 +1,8 @@
 $globals:
-  shell: bash
-  version: "7.0"
+  version: "8.1"
   vars:
     p_sync: --sync
+    p_verbose: --verbose
 
 install:
   phony: true
@@ -10,7 +10,7 @@ install:
   requires:
     - p-lock.toml
   commands:
-    - p install ${p_sync} ${.extra}
+    - p install ${p_sync} ${p_verbose} ${.extra}
 
 format:
   phony: true
@@ -26,7 +26,7 @@ lint:
     - install
   commands:
     - black --check .
-    - p check
+    - p check --lockfile
     - ruff check .
     - mypy .
 
@@ -42,4 +42,4 @@ p-lock.toml:
   requires:
     - pyproject.toml
   commands:
-    - p lock
+    - p lock ${p_verbose}

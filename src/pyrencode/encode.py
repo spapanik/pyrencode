@@ -33,7 +33,7 @@ class Encoder:
         elif isinstance(obj, int):
             yield from cls.encode_int(obj)
         elif isinstance(obj, float):
-            if float_bits == 32:
+            if float_bits == 32:  # noqa: PLR2004
                 yield from cls.encode_float32(obj)
             else:
                 yield from cls.encode_float64(obj)
