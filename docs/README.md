@@ -28,7 +28,7 @@ many cases it\'s even better.
 [test_badge]: https://github.com/spapanik/pyrencode/actions/workflows/tests.yml/badge.svg
 [test_url]: https://github.com/spapanik/pyrencode/actions/workflows/tests.yml
 [licence_badge]: https://img.shields.io/pypi/l/pyrencode
-[licence_url]: https://github.com/spapanik/pyrencode/blob/main/docs/LICENSE.md
+[licence_url]: https://pyrencode.readthedocs.io/en/stable/LICENSE/
 [pypi_badge]: https://img.shields.io/pypi/v/pyrencode
 [pypi_url]: https://pypi.org/project/pyrencode
 [pepy_badge]: https://pepy.tech/badge/pyrencode
@@ -40,4 +40,4 @@ many cases it\'s even better.
 [ruff_badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json
 [ruff_url]: https://github.com/charliermarsh/ruff
 [Documentation]: https://pyrencode.readthedocs.io/en/stable/
-[Changelog]: https://github.com/spapanik/pyrencode/blob/main/docs/CHANGELOG.md
+[Changelog]: https://pyrencode.readthedocs.io/en/stable/CHANGELOG/
