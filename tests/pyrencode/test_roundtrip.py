@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import struct
-from typing import Any
 
 import pytest
 
@@ -43,11 +42,11 @@ def test_mixed_types_tuple() -> None:
 
 
 def test_tuple_of_updated_dict() -> None:
-    d: dict[Any, Any] = {i: i for i in range(-100000, 100000)}
+    d: dict[object, object] = {i: i for i in range(-100000, 100000)}
     d.update(
         {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
     )
-    obj: tuple[Any, ...] = (
+    obj: tuple[object, ...] = (
         d,
         {},
         {5: 6},

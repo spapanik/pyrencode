@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import struct
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from pyrencode import constants
 from pyrencode.utils import to_bytes
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Sequence
+    from collections.abc import Iterator, Mapping, Sequence
 
 
 class Encoder:
@@ -15,7 +15,7 @@ class Encoder:
 
     @classmethod
     def encode(
-        cls, obj: Any, *, float_bits: int = constants.DEFAULT_FLOAT_BITS
+        cls, obj: object, *, float_bits: int = constants.DEFAULT_FLOAT_BITS
     ) -> bytes:
         if float_bits not in {32, 64}:
             msg = f"Float bits {float_bits} is not 32 or 64"
@@ -23,7 +23,7 @@ class Encoder:
         return b"".join(cls._encode(obj, float_bits))
 
     @classmethod
-    def _encode(cls, obj: Any, float_bits: int) -> Iterator[bytes]:
+    def _encode(cls, obj: object, float_bits: int) -> Iterator[bytes]:
         if obj is None:
             yield constants.CHR_NONE
         elif obj is True:
@@ -102,7 +102,7 @@ class Encoder:
         yield from cls.encode_bytes(obj.encode())
 
     @classmethod
-    def encode_list(cls, obj: Sequence[Any], float_bits: int) -> Iterator[bytes]:
+    def encode_list(cls, obj: Sequence[object], float_bits: int) -> Iterator[bytes]:
         if len(obj) < constants.LIST_FIXED_COUNT:
             yield to_bytes(constants.LIST_FIXED_START + len(obj))
             for item in obj:
@@ -114,7 +114,9 @@ class Encoder:
             yield constants.CHR_TERM
 
     @classmethod
-    def encode_dict(cls, obj: dict[Any, Any], float_bits: int) -> Iterator[bytes]:
+    def encode_dict(
+        cls, obj: Mapping[object, object], float_bits: int
+    ) -> Iterator[bytes]:
         if len(obj) < constants.DICT_FIXED_COUNT:
             yield to_bytes(constants.DICT_FIXED_START + len(obj))
             for key, value in obj.items():
@@ -128,5 +130,5 @@ class Encoder:
             yield constants.CHR_TERM
 
 
-def dumps(obj: Any, float_bits: int = constants.DEFAULT_FLOAT_BITS) -> bytes:
+def dumps(obj: object, float_bits: int = constants.DEFAULT_FLOAT_BITS) -> bytes:
     return Encoder.encode(obj, float_bits=float_bits)

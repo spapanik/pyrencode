@@ -13,5 +13,5 @@ def test_encode_int_over_max_size() -> None:
 
 
 def test_dumps_wrong_float_bits() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Float bits \d+ is not 32 or 64"):
         encode.dumps(None, float_bits=128)
