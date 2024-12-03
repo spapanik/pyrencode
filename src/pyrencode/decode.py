@@ -17,7 +17,7 @@ class Decoder(metaclass=Singleton):
     @classmethod
     def decode(
         cls, bytes_obj: bytes, *, decode_utf8: bool = constants.DECODE_UTF8
-    ) -> Any:
+    ) -> object:
         try:
             obj, end_position = cls._decode(bytes_obj, decode_utf8=decode_utf8)
         except (IndexError, KeyError, OverflowError) as exc:
@@ -30,7 +30,7 @@ class Decoder(metaclass=Singleton):
     @classmethod
     def _decode(
         cls, bytes_obj: bytes, cursor: int = 0, *, decode_utf8: bool
-    ) -> tuple[Any, int]:
+    ) -> tuple[object, int]:
         type_byte = bytes_obj[cursor : cursor + 1]
         if type_byte == constants.CHR_NONE:
             return None, cursor + 1

@@ -15,7 +15,7 @@ class Encoder:
 
     @classmethod
     def encode(
-        cls, obj: Any, *, float_bits: int = constants.DEFAULT_FLOAT_BITS
+        cls, obj: object, *, float_bits: int = constants.DEFAULT_FLOAT_BITS
     ) -> bytes:
         if float_bits not in {32, 64}:
             msg = f"Float bits {float_bits} is not 32 or 64"
@@ -23,7 +23,7 @@ class Encoder:
         return b"".join(cls._encode(obj, float_bits))
 
     @classmethod
-    def _encode(cls, obj: Any, float_bits: int) -> Iterator[bytes]:
+    def _encode(cls, obj: object, float_bits: int) -> Iterator[bytes]:
         if obj is None:
             yield constants.CHR_NONE
         elif obj is True:
@@ -128,5 +128,5 @@ class Encoder:
             yield constants.CHR_TERM
 
 
-def dumps(obj: Any, float_bits: int = constants.DEFAULT_FLOAT_BITS) -> bytes:
+def dumps(obj: object, float_bits: int = constants.DEFAULT_FLOAT_BITS) -> bytes:
     return Encoder.encode(obj, float_bits=float_bits)
