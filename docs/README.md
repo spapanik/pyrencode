@@ -4,6 +4,8 @@
 [![lint][lint_badge]][lint_url]
 [![tests][test_badge]][test_url]
 [![license][licence_badge]][licence_url]
+[![codecov][codecov_badge]][codecov_url]
+[![readthedocs][readthedocs_badge]][readthedocs_url]
 [![pypi][pypi_badge]][pypi_url]
 [![downloads][pepy_badge]][pepy_url]
 [![code style: black][black_badge]][black_url]
@@ -29,6 +31,10 @@ many cases it\'s even better.
 [test_url]: https://github.com/spapanik/pyrencode/actions/workflows/tests.yml
 [licence_badge]: https://img.shields.io/pypi/l/pyrencode
 [licence_url]: https://pyrencode.readthedocs.io/en/stable/LICENSE/
+[codecov_badge]: https://codecov.io/github/spapanik/pyrencode/graph/badge.svg?token=Q20F84BW72
+[codecov_url]: https://codecov.io/github/spapanik/pyrencode
+[readthedocs_badge]: https://readthedocs.org/projects/pyrencode/badge/?version=latest
+[readthedocs_url]: https://pyrencode.readthedocs.io/en/latest/
 [pypi_badge]: https://img.shields.io/pypi/v/pyrencode
 [pypi_url]: https://pypi.org/project/pyrencode
 [pepy_badge]: https://pepy.tech/badge/pyrencode
