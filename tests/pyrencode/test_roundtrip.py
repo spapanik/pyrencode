@@ -43,9 +43,7 @@ def test_mixed_types_tuple() -> None:
 
 def test_tuple_of_updated_dict() -> None:
     d: dict[object, object] = {i: i for i in range(-100000, 100000)}
-    d.update(
-        {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
-    )
+    d |= {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
     obj: tuple[object, ...] = (
         d,
         {},
