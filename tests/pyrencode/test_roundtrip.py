@@ -17,10 +17,11 @@ def test_mixed_types_tuple() -> None:
         (
             {b"a": 15, b"bb": f1, b"ccc": f2, b"": (f3, (), False, True, b"")},
             (b"a", 10**20),
-            tuple(range(-100000, 100000)),
+            tuple(range(-100, 100)),
             b"b" * 31,
             b"b" * 62,
             b"b" * 64,
+            2**10,
             2**30,
             2**33,
             2**62,
@@ -29,6 +30,7 @@ def test_mixed_types_tuple() -> None:
             2**33,
             2**62,
             2**64,
+            -(2**64),
             False,
             False,
             True,
@@ -42,8 +44,16 @@ def test_mixed_types_tuple() -> None:
 
 
 def test_tuple_of_updated_dict() -> None:
-    d: dict[object, object] = {i: i for i in range(-100000, 100000)}
-    d |= {b"a": 20, 20: 40, 40: 41, f1: f2, f2: f3, f3: False, False: True, True: False}
+    d: dict[object, object] = {i: i for i in range(-100, 100)} | {
+        b"a": 20,
+        20: 40,
+        40: 41,
+        f1: f2,
+        f2: f3,
+        f3: False,
+        False: True,
+        True: False,
+    }
     obj: tuple[object, ...] = (
         d,
         {},

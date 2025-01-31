@@ -20,8 +20,9 @@ class Decoder(metaclass=Singleton):
     ) -> Any:  # noqa: ANN401
         try:
             obj, end_position = cls._decode(bytes_obj, decode_utf8=decode_utf8)
-        except (IndexError, KeyError, OverflowError) as exc:
-            raise ValueError from exc
+        except (IndexError, TypeError, KeyError, OverflowError) as exc:
+            # We've tried to decode bytes that weren't properly encoded
+            raise ValueError(str(exc)) from exc
         if end_position != len(bytes_obj):
             msg = f"extra data: {bytes_obj[end_position:]!r}"
             raise ValueError(msg)

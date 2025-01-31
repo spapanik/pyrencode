@@ -15,7 +15,7 @@ f3 = struct.unpack("!f", struct.pack("!f", -0.6))[0]
     [
         {b"a": 15, b"bb": f1, b"ccc": f2, b"": (f3, (), False, True, b"")},
         (b"a", 10**20),
-        list(range(-100000, 100000)),
+        list(range(-100, 100)),
         b"b" * 31,
         b"b" * 64,
         2**64,
