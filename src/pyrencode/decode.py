@@ -15,7 +15,7 @@ class Decoder(metaclass=Singleton):
     __slots__ = ()
 
     @classmethod
-    def decode(  # type: ignore[misc]
+    def decode(  # type: ignore[explicit-any]
         cls, bytes_obj: bytes, *, decode_utf8: bool = constants.DECODE_UTF8
     ) -> Any:  # noqa: ANN401
         try:
@@ -29,7 +29,7 @@ class Decoder(metaclass=Singleton):
         return obj
 
     @classmethod
-    def _decode(  # type: ignore[misc]
+    def _decode(  # type: ignore[explicit-any]
         cls, bytes_obj: bytes, cursor: int = 0, *, decode_utf8: bool
     ) -> tuple[Any, int]:
         type_byte = bytes_obj[cursor : cursor + 1]
@@ -159,7 +159,7 @@ class Decoder(metaclass=Singleton):
         return cls._decode_string(bytes_obj, colon + 1, length, decode_utf8=decode_utf8)
 
     @classmethod
-    def decode_list(  # type: ignore[misc]
+    def decode_list(  # type: ignore[explicit-any]
         cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool
     ) -> tuple[tuple[Any, ...], int]:
         output = []
@@ -170,7 +170,7 @@ class Decoder(metaclass=Singleton):
         return tuple(output), cursor + 1
 
     @classmethod
-    def decode_dict(  # type: ignore[misc]
+    def decode_dict(  # type: ignore[explicit-any]
         cls, bytes_obj: bytes, cursor: int, *, decode_utf8: bool
     ) -> tuple[dict[Any, Any], int]:
         output = {}
@@ -230,7 +230,7 @@ class Decoder(metaclass=Singleton):
         return output, cursor
 
 
-def loads(  # type: ignore[misc]
+def loads(  # type: ignore[explicit-any]
     bytes_obj: bytes, *, decode_utf8: bool = False
 ) -> Any:  # noqa: ANN401
     return Decoder.decode(bytes_obj, decode_utf8=decode_utf8)

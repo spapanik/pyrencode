@@ -26,9 +26,9 @@ classifiers = [
     "Intended Audience :: Developers",
 ]
 
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
-    "pyutilkit~=0.6",
+    "pyutilkit~=0.10",
 ]
 
 [project.urls]
@@ -39,36 +39,30 @@ documentation = "https://pyrencode.readthedocs.io/en/stable/"
 [dependency-groups]
 dev = [
     "ipdb~=0.13",
-    "ipython~=8.18",
+    "ipython~=8.37",
     { include-group = "lint" },
     { include-group = "test" },
     { include-group = "docs" },
 ]
 lint = [
-    "black~=24.10",
-    "mypy~=1.14",
-    "ruff~=0.9",
+    "mypy~=1.16",
+    "ruff~=0.12",
     { include-group = "test_core" },
 ]
 test = [
-    "pytest-cov~=6.0",
+    "pytest-cov~=6.2",
     { include-group = "test_core" },
 ]
 test_core = [
-    "rencode~=1.0",
-    "pytest~=8.3",
+    'rencode~=1.0; sys_platform == "linux"',
+    "pytest~=8.4",
 ]
 docs = [
     "mkdocs~=1.6",
-    "mkdocs-material~=9.5",
+    "mkdocs-material~=9.6",
     "mkdocs-material-extensions~=1.3",
     "pygments~=2.19",
-    "pymdown-extensions~=10.14",
-]
-
-[tool.black]
-target-version = [
-    "py39",
+    "pymdown-extensions~=10.15",
 ]
 
 [tool.mypy]
@@ -103,7 +97,7 @@ disallow_any_decorated = false # mock.MagicMock is Any
 src = [
     "src",
 ]
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = [
@@ -111,11 +105,10 @@ select = [
 ]
 ignore = [
     "C901",   # Adding a limit to complexity is too arbitrary
-    "COM812", # Avoid magic trailing commas
+    "COM812", # Avoid conflicts with the formatter
     "D10",    # Not everything needs a docstring
     "D203",   # Prefer `no-blank-line-before-class` (D211)
     "D213",   # Prefer `multi-line-summary-first-line` (D212)
-    "E501",   # Avoid clashes with black
     "PLR09",  # Adding a limit to complexity is too arbitrary
 ]
 
@@ -158,6 +151,7 @@ omit = [
 exclude_also = [
     "if TYPE_CHECKING:",
     "raise NotImplementedError",
+    "raise UnreachableCodeError",
 ]
 fail_under = 100
 precision = 2

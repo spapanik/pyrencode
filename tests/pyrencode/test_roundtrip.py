@@ -82,8 +82,8 @@ def test_tuple_of_bytes() -> None:
 
 def test_tuple_of_dicts() -> None:
     obj = (
-        tuple(dict(zip(range(n), range(n))) for n in range(100))
-        + tuple(dict(zip(range(n), range(-n, 0))) for n in range(100))
+        tuple(dict(zip(range(n), range(n), strict=False)) for n in range(100))
+        + tuple(dict(zip(range(n), range(-n, 0), strict=False)) for n in range(100))
         + (b"b",)
     )
     assert loads(dumps(obj)) == obj
