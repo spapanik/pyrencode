@@ -8,7 +8,6 @@
 [![readthedocs][readthedocs_badge]][readthedocs_url]
 [![pypi][pypi_badge]][pypi_url]
 [![downloads][pepy_badge]][pepy_url]
-[![code style: black][black_badge]][black_url]
 [![build automation: yam][yam_badge]][yam_url]
 [![Lint: ruff][ruff_badge]][ruff_url]
 
@@ -39,8 +38,6 @@ many cases it\'s even better.
 [pypi_url]: https://pypi.org/project/pyrencode
 [pepy_badge]: https://pepy.tech/badge/pyrencode
 [pepy_url]: https://pepy.tech/project/pyrencode
-[black_badge]: https://img.shields.io/badge/code%20style-black-000000.svg
-[black_url]: https://github.com/psf/black
 [yam_badge]: https://img.shields.io/badge/build%20automation-yamk-success
 [yam_url]: https://github.com/spapanik/yamk
 [ruff_badge]: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json
