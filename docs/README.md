@@ -20,8 +20,8 @@ many cases it\'s even better.
 
 ## Links
 
--   [Documentation]
--   [Changelog]
+- [Documentation]
+- [Changelog]
 
 [build_badge]: https://github.com/spapanik/pyrencode/actions/workflows/build.yml/badge.svg
 [build_url]: https://github.com/spapanik/pyrencode/actions/workflows/build.yml
