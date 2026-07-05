@@ -34,24 +34,20 @@ f3 = struct.unpack("!f", struct.pack("!f", -0.6))[0]
         [1, 2, 3, True],
     ],
 )
+@pytest.mark.parametrize(
+    "decode_utf8",
+    [True, False],
+)
 @pytest.mark.skipif(
     sys.platform != "linux",
     reason="This test runs only on Linux due to the original rencode being Linux-only.",
 )
-def test_dump_and_load(obj: object) -> None:
-    from rencode import dumps as dumps_orig, loads as loads_orig  # noqa: PLC0415
+def test_dump_and_load(obj: object, decode_utf8: bool) -> None:
+    # duplicate the check to appease the type checker overlords :(
+    if sys.platform == "linux":
+        from rencode import dumps as dumps_orig, loads as loads_orig  # noqa: PLC0415
 
-    original = dumps_orig(obj)
-    assert dumps(obj) == original
-    assert loads(original) == loads_orig(original)
-
-
-@pytest.mark.skipif(
-    sys.platform != "linux",
-    reason="This test runs only on Linux due to the original rencode being Linux-only.",
-)
-def test_dump_and_load_with_decode() -> None:
-    from rencode import dumps as dumps_orig, loads as loads_orig  # noqa: PLC0415
-
-    original = dumps_orig("Hello World!")
-    assert loads(original, decode_utf8=True) == loads_orig(original, decode_utf8=True)
+        original = dumps_orig(obj)
+        assert dumps(obj) == original
+        decoded = loads_orig(original, decode_utf8=decode_utf8)
+        assert loads(original, decode_utf8=decode_utf8) == decoded

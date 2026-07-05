@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import struct
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from pyrencode import constants
 from pyrencode.utils import to_bytes
@@ -42,7 +42,7 @@ class Encoder:
         elif isinstance(obj, (list, tuple)):
             yield from cls.encode_list(obj, float_bits)
         elif isinstance(obj, dict):
-            yield from cls.encode_dict(obj, float_bits)
+            yield from cls.encode_dict(cast("Mapping[object, object]", obj), float_bits)
         elif isinstance(obj, str):
             yield from cls.encode_string(obj)
         else:
